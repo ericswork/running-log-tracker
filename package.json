@@ -1,0 +1,12 @@
+{
+  "name": "running-log-tracker",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Running Log & Training Dashboard — dev launcher for the client + server apps",
+  "scripts": {
+    "dev": "concurrently -n server,client -c blue,green \"npm --prefix server run dev\" \"npm --prefix client run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
