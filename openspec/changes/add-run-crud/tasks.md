@@ -31,10 +31,10 @@
 
 ## 5. Frontend UI
 
-- [ ] 5.1 Build a run-entry form (distance, duration, separate start-date and start-time inputs, run type select from allowed values, optional notes); combine date + time into one ISO date-time on submit
-- [ ] 5.2 Wire form submit to a React Query mutation that invalidates the `["runs"]` query on success
-- [ ] 5.3 Build a run list view that fetches via `useQuery` and renders runs newest-first
-- [ ] 5.4 Confirm a newly created run appears in the list without a full page reload
+- [x] 5.1 Build a run-entry form (distance, duration, separate start-date and start-time inputs, run type select from allowed values, optional notes); combine date + time into one ISO date-time on submit
+- [x] 5.2 Wire form submit to a React Query mutation that invalidates the `["runs"]` query on success
+- [x] 5.3 Build a run list view that fetches via `useQuery` and renders runs newest-first
+- [x] 5.4 Confirm a newly created run appears in the list without a full page reload
 
 ## 6. Verification
 
