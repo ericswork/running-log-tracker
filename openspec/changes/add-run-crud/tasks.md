@@ -6,21 +6,21 @@
 
 ## 2. Validation
 
-- [ ] 2.1 Install `zod` in `server/`
-- [ ] 2.2 Add a shared `RUN_TYPES` constant (`Easy`, `Recovery`, `Tempo`, `Interval`, `Long Run`, `Race`) in `server/`
-- [ ] 2.3 Define `zod` create/update schemas: positive distance (km) and duration (sec), valid ISO date-time for start, run type as `z.enum(RUN_TYPES)` defaulting to `Easy`, optional notes; infer request types from the schemas
-- [ ] 2.4 Map `zod` parse failures to HTTP 400 with a structured JSON error body
+- [x] 2.1 Install `zod` in `server/`
+- [x] 2.2 Add a shared `RUN_TYPES` constant (`Easy`, `Recovery`, `Tempo`, `Interval`, `Long Run`, `Race`) in `server/`
+- [x] 2.3 Define `zod` create/update schemas: positive distance (km) and duration (sec), valid ISO date-time for start, run type as `z.enum(RUN_TYPES)` defaulting to `Easy`, optional notes; infer request types from the schemas
+- [x] 2.4 Map `zod` parse failures to HTTP 400 with a structured JSON error body
 
 ## 3. Backend API
 
-- [ ] 3.1 Create a runs controller with handlers: create, list, getById, update, delete
-- [ ] 3.2 Wire a runs router under `/api/runs` and mount it in `index.ts`
-- [ ] 3.3 Implement create → validate, persist, return 201 with the created run
-- [ ] 3.4 Implement list → return all runs ordered by date descending (200, empty array when none)
-- [ ] 3.5 Implement getById → 200 with the run, 404 when not found
-- [ ] 3.6 Implement update → validate, 200 with updated run, 404 when not found
-- [ ] 3.7 Implement delete → success status, 404 when not found
-- [ ] 3.8 Ensure invalid input returns 400 with a JSON error body and is not persisted
+- [x] 3.1 Create a runs controller with handlers: create, list, getById, update, delete
+- [x] 3.2 Wire a runs router under `/api/runs` and mount it in `index.ts`
+- [x] 3.3 Implement create → validate, persist, return 201 with the created run
+- [x] 3.4 Implement list → return all runs ordered by date descending (200, empty array when none)
+- [x] 3.5 Implement getById → 200 with the run, 404 when not found
+- [x] 3.6 Implement update → validate, 200 with updated run, 404 when not found
+- [x] 3.7 Implement delete → success status, 404 when not found
+- [x] 3.8 Ensure invalid input returns 400 with a JSON error body and is not persisted
 
 ## 4. Frontend data layer
 
