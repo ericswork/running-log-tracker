@@ -11,3 +11,13 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model Run {
+  id          String   @id @default(cuid())
+  distanceKm  Float
+  durationSec Int
+  date        DateTime
+  type        String
+  notes       String?
+  createdAt   DateTime @default(now())
+}

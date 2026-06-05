@@ -1,8 +1,8 @@
 ## 1. Data model & Prisma
 
-- [ ] 1.1 Define a `Run` model in `server/prisma/schema.prisma` (id, distanceKm Float, durationSec Int, date DateTime, type String, notes String?, createdAt DateTime @default(now()))
-- [ ] 1.2 Run the initial migration to create the SQLite table (`prisma migrate dev`)
-- [ ] 1.3 Add a Prisma client singleton module the API can import
+- [x] 1.1 Define a `Run` model in `server/prisma/schema.prisma` (id, distanceKm Float, durationSec Int, date DateTime, type String, notes String?, createdAt DateTime @default(now()))
+- [x] 1.2 Run the initial migration to create the SQLite table (`prisma migrate dev`)
+- [x] 1.3 Add a Prisma client singleton module the API can import
 
 ## 2. Validation
 
