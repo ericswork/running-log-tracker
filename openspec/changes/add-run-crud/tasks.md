@@ -24,10 +24,10 @@
 
 ## 4. Frontend data layer
 
-- [ ] 4.1 Install `@tanstack/react-query` in `client/`
-- [ ] 4.2 Add a `QueryClientProvider` at the app root
-- [ ] 4.3 Configure a dev proxy (Vite) or base URL so the client reaches the API
-- [ ] 4.4 Write typed API client functions for the five run endpoints
+- [x] 4.1 Install `@tanstack/react-query` in `client/`
+- [x] 4.2 Add a `QueryClientProvider` at the app root
+- [x] 4.3 Configure a dev proxy (Vite) or base URL so the client reaches the API
+- [x] 4.4 Write typed API client functions for the five run endpoints
 
 ## 5. Frontend UI
 
