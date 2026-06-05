@@ -38,6 +38,6 @@
 
 ## 6. Verification
 
-- [ ] 6.1 Manually exercise each endpoint (curl or REST client) against the spec scenarios, including 400/404 cases
-- [ ] 6.2 Verify end-to-end in the browser: add a run via the form, see it appear newest-first
-- [ ] 6.3 Confirm `dev.db` is gitignored and not committed
+- [x] 6.1 Manually exercise each endpoint (curl or REST client) against the spec scenarios, including 400/404 cases
+- [x] 6.2 Verify end-to-end in the browser: add a run via the form, see it appear newest-first
+- [x] 6.3 Confirm `dev.db` is gitignored and not committed
