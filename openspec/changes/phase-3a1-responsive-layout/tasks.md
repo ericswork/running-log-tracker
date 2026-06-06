@@ -1,8 +1,8 @@
 ## 1. Shared RunFormDialog + RunForm tweak
 
-- [ ] 1.1 Add `RunForm` create-success `onDone` call (after resetting fields) so an overlay closes on create; desktop inline form passes no `onDone` and is unaffected
-- [ ] 1.2 Create `features/runs/RunFormDialog.tsx` — wraps `RunForm` in a shadcn `Dialog` with props `{ open, onOpenChange, initialRun?, title }`; renders `RunForm` only while open (remounts fresh, keyed by `initialRun?.id ?? 'new'`) and wires `onDone` to close
-- [ ] 1.3 Refactor `RunList` edit to use `RunFormDialog` (replace its inline Dialog markup); keep edit behavior identical (delete AlertDialog unchanged)
+- [x] 1.1 Add `RunForm` create-success `onDone` call (after resetting fields) so an overlay closes on create; desktop inline form passes no `onDone` and is unaffected
+- [x] 1.2 Create `features/runs/RunFormDialog.tsx` — wraps `RunForm` in a shadcn `Dialog` with props `{ open, onOpenChange, initialRun?, title }`; renders `RunForm` only while open (remounts fresh, keyed by `initialRun?.id ?? 'new'`) and wires `onDone` to close
+- [x] 1.3 Refactor `RunList` edit to use `RunFormDialog` (replace its inline Dialog markup); keep edit behavior identical (delete AlertDialog unchanged) — existing edit/delete tests still pass
 
 ## 2. Responsive two-column layout
 

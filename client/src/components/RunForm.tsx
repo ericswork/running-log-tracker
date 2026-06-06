@@ -111,6 +111,9 @@ export function RunForm({ initialRun, onDone }: RunFormProps = {}) {
       setTime('')
       setType('Easy')
       setNotes('')
+      // Close the overlay when the create form lives in one. The desktop inline
+      // form passes no onDone, so this is a no-op there (it just resets).
+      onDone?.()
     },
   })
 

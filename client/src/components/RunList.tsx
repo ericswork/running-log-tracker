@@ -1,15 +1,8 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchRuns, deleteRun, type Run } from '../api/runs'
-import { RunForm } from './RunForm'
 import { RunsTable } from '@/features/runs/RunsTable'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { RunFormDialog } from '@/features/runs/RunFormDialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,33 +47,22 @@ export function RunList() {
     return <p className="text-destructive">Failed to load runs: {(error as Error).message}</p>
 
   const runs: Run[] = data ?? []
-  if (runs.length === 0) return <p className="text-muted-foreground">No runs yet. Add one above.</p>
+  if (runs.length === 0) return <p className="text-muted-foreground">No runs yet.</p>
 
   return (
     <>
       <RunsTable runs={runs} onEdit={setEditingRun} onDelete={setPendingDelete} />
 
-      {/* Edit: the run-entry form, prefilled, inside a dialog. */}
-      <Dialog
+      {/* Edit: the run-entry form, prefilled, inside the shared dialog. */}
+      <RunFormDialog
         open={editingRun !== null}
         onOpenChange={(open) => {
           if (!open) setEditingRun(null)
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit run</DialogTitle>
-            <DialogDescription>Update the details of this run.</DialogDescription>
-          </DialogHeader>
-          {editingRun && (
-            <RunForm
-              key={editingRun.id}
-              initialRun={editingRun}
-              onDone={() => setEditingRun(null)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+        initialRun={editingRun ?? undefined}
+        title="Edit run"
+        description="Update the details of this run."
+      />
 
       {/* Delete: explicit confirmation; declining makes no API call. */}
       <AlertDialog
