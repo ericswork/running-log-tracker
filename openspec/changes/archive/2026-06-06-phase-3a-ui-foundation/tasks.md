@@ -37,4 +37,4 @@
 
 - [x] 6.1 Run the full client test suite (`npm --prefix client test`) — all green (13/13)
 - [x] 6.2 Confirm `npm --prefix client run build` typechecks/builds and the backend suite is untouched (`npm --prefix server test` still 42/42)
-- [ ] 6.3 Manually verify in the dev app: table sorts by each column, edit dialog and delete confirmation work, theme toggle persists, and create/edit still submit unchanged payloads — _awaiting user click-through_
+- [x] 6.3 Manually verify in the dev app: table sorts by each column, edit dialog and delete confirmation work, theme toggle persists, and create/edit still submit unchanged payloads — confirmed by user (incl. dark-mode date/time picker icon fix)

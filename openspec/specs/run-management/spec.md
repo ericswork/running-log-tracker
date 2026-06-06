@@ -139,17 +139,22 @@ The frontend SHALL provide a form to create a run capturing distance, duration, 
 
 ### Requirement: Run list view
 
-The frontend SHALL display all runs newest-first using data fetched with TanStack React Query. Each run in the list SHALL expose an edit control and a delete control for that run.
+The frontend SHALL display all runs in a data table using data fetched with TanStack React Query. The table SHALL default to newest-first (date descending) ordering and SHALL allow the user to sort by date, distance, duration, and run type. Each row SHALL expose an edit control and a delete control for that run.
 
-#### Scenario: Runs displayed newest first
+#### Scenario: Runs displayed newest first by default
 
-- **WHEN** the run list view loads and runs exist
+- **WHEN** the run list table loads and runs exist
 - **THEN** the runs are displayed ordered from newest to oldest
 
-#### Scenario: Each run offers edit and delete controls
+#### Scenario: User sorts the table by a column
 
-- **WHEN** the run list view displays a run
-- **THEN** that run presents controls to edit it and to delete it
+- **WHEN** the user activates sorting on the date, distance, duration, or run type column
+- **THEN** the table reorders the runs by that column
+
+#### Scenario: Each row offers edit and delete controls
+
+- **WHEN** the run list table displays a run
+- **THEN** that row presents controls to edit it and to delete it
 
 ### Requirement: Edit a run from the list
 
