@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="running-log-tracker-test" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Sample Run</name>
+    <trkseg>
+      <trkpt lat="37.0000" lon="-122.0000">
+        <ele>10</ele>
+        <time>2026-06-06T07:00:00.000Z</time>
+      </trkpt>
+      <trkpt lat="37.0010" lon="-122.0000">
+        <ele>11</ele>
+        <time>2026-06-06T07:01:00.000Z</time>
+      </trkpt>
+      <trkpt lat="37.0010" lon="-121.9990">
+        <ele>12</ele>
+        <time>2026-06-06T07:02:00.000Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

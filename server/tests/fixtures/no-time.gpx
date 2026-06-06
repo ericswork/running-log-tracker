@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="running-log-tracker-test" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Run Without Timestamps</name>
+    <trkseg>
+      <trkpt lat="37.0000" lon="-122.0000"><ele>10</ele></trkpt>
+      <trkpt lat="37.0010" lon="-122.0000"><ele>11</ele></trkpt>
+      <trkpt lat="37.0010" lon="-121.9990"><ele>12</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
