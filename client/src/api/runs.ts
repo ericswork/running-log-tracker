@@ -31,6 +31,13 @@ export interface CreateRunPayload {
 
 export type UpdateRunPayload = Partial<CreateRunPayload>;
 
+// Parsed fields returned by the GPX import endpoint (no run is persisted).
+export interface ImportedRun {
+  distanceKm: number;
+  durationSec?: number;
+  date?: string; // ISO 8601
+}
+
 // Relative path — Vite's dev proxy forwards /api to the Express server.
 const BASE = "/api/runs";
 
@@ -85,4 +92,14 @@ export async function deleteRun(id: string): Promise<void> {
   if (!res.ok) {
     throw new Error(`Delete failed (${res.status})`);
   }
+}
+
+// Upload a .gpx file for parsing. No Content-Type header — the browser sets the
+// multipart boundary automatically for FormData.
+export async function importGpx(file: File): Promise<ImportedRun> {
+  const formData = new FormData();
+  formData.append("file", file);
+  return handle<ImportedRun>(
+    await fetch(`${BASE}/import`, { method: "POST", body: formData }),
+  );
 }

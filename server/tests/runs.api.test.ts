@@ -29,6 +29,14 @@ describe('POST /api/runs (create)', () => {
     const res = await request(app).post('/api/runs').send(validRun)
     expect(res.body.date).toBe('2026-06-06T07:30:00.000Z')
   })
+
+  it('stores a high-precision distance as-is (no rounding)', async () => {
+    const res = await request(app)
+      .post('/api/runs')
+      .send({ ...validRun, distanceKm: 8.234 })
+    expect(res.status).toBe(201)
+    expect(res.body.distanceKm).toBe(8.234)
+  })
 })
 
 describe('GET /api/runs (list)', () => {

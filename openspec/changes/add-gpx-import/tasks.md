@@ -14,10 +14,11 @@
 
 ## 3. Frontend upload
 
-- [ ] 3.1 Add an API client function `importGpx(file)` that POSTs multipart to `/api/runs/import` and returns the parsed fields
-- [ ] 3.2 Add a `.gpx` file input to the run form
-- [ ] 3.3 On upload, call `importGpx`, pre-fill distance + (when present) duration and date/time fields; leave run type/notes for the user
-- [ ] 3.4 Surface upload/parse errors in the form; do not pre-fill on error
+- [x] 3.1 Add an API client function `importGpx(file)` that POSTs multipart to `/api/runs/import` and returns the parsed fields
+- [x] 3.2 Add a `.gpx` file input to the run form
+- [x] 3.3 On upload, call `importGpx`, pre-fill distance + (when present) duration and date/time fields; leave run type/notes for the user
+- [x] 3.4 Surface upload/parse errors in the form; do not pre-fill on error
+- [x] 3.5 Fix: distance input used `step="0.01"`, rejecting imported high-precision distances; relax to `step="any"` and store the value as-is (no rounding). Backend test asserts a high-precision distance persists unchanged.
 
 ## 4. Verification
 

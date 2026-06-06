@@ -1,6 +1,8 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createRun, RUN_TYPES, type RunType } from '../api/runs'
+import { createRun, importGpx, RUN_TYPES, type RunType } from '../api/runs'
+
+const pad = (n: number) => String(n).padStart(2, '0')
 
 export function RunForm() {
   const queryClient = useQueryClient()
@@ -13,6 +15,35 @@ export function RunForm() {
   const [time, setTime] = useState('')
   const [type, setType] = useState<RunType>('Easy')
   const [notes, setNotes] = useState('')
+
+  const [importing, setImporting] = useState(false)
+  const [importError, setImportError] = useState<string | null>(null)
+
+  async function handleGpxChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImporting(true)
+    setImportError(null)
+    try {
+      const parsed = await importGpx(file)
+      setDistanceKm(String(parsed.distanceKm))
+      if (parsed.durationSec !== undefined) {
+        setHours(String(Math.floor(parsed.durationSec / 3600)))
+        setMinutes(String(Math.floor((parsed.durationSec % 3600) / 60)))
+        setSeconds(String(parsed.durationSec % 60))
+      }
+      if (parsed.date) {
+        const d = new Date(parsed.date)
+        setDate(`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`)
+        setTime(`${pad(d.getHours())}:${pad(d.getMinutes())}`)
+      }
+    } catch (err) {
+      setImportError((err as Error).message)
+    } finally {
+      setImporting(false)
+      e.target.value = '' // allow re-uploading the same file
+    }
+  }
 
   const mutation = useMutation({
     mutationFn: createRun,
@@ -52,10 +83,19 @@ export function RunForm() {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '0.75rem' }}>
       <label>
+        Import from GPX
+        <input type="file" accept=".gpx" onChange={handleGpxChange} disabled={importing} />
+      </label>
+      {importing && <p>Parsing GPX…</p>}
+      {importError && (
+        <p style={{ color: 'crimson' }}>Could not import GPX: {importError}</p>
+      )}
+
+      <label>
         Distance (km)
         <input
           type="number"
-          step="0.01"
+          step="any"
           min="0.01"
           required
           value={distanceKm}
