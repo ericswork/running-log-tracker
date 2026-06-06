@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ArrowUpDown } from 'lucide-react'
+import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -31,6 +31,17 @@ function formatDuration(totalSec: number): string {
 
 function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleString()
+}
+
+// Compact date for narrow screens, e.g. "6/6/26, 5:05 PM".
+function formatDateShort(iso: string): string {
+  return new Date(iso).toLocaleString(undefined, {
+    month: 'numeric',
+    day: 'numeric',
+    year: '2-digit',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
 }
 
 function SortHeader({ column, label }: { column: Column<Run, unknown>; label: string }) {
@@ -63,7 +74,12 @@ export function RunsTable({
       {
         accessorKey: 'date',
         header: ({ column }) => <SortHeader column={column} label="Date" />,
-        cell: ({ row }) => formatDateTime(row.original.date),
+        cell: ({ row }) => (
+          <>
+            <span className="md:hidden">{formatDateShort(row.original.date)}</span>
+            <span className="hidden md:inline">{formatDateTime(row.original.date)}</span>
+          </>
+        ),
       },
       {
         accessorKey: 'distanceKm',
@@ -85,11 +101,24 @@ export function RunsTable({
         header: () => <span className="sr-only">Actions</span>,
         cell: ({ row }) => (
           <div className="flex justify-end gap-2">
-            <Button variant="outline" size="sm" onClick={() => onEdit(row.original)}>
-              Edit
+            {/* Icon-only on mobile (to fit the width), icon + label at md+. */}
+            <Button
+              variant="outline"
+              size="sm"
+              aria-label="Edit"
+              onClick={() => onEdit(row.original)}
+            >
+              <Pencil className="size-4" />
+              <span className="hidden md:inline">Edit</span>
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => onDelete(row.original)}>
-              Delete
+            <Button
+              variant="destructive"
+              size="sm"
+              aria-label="Delete"
+              onClick={() => onDelete(row.original)}
+            >
+              <Trash2 className="size-4" />
+              <span className="hidden md:inline">Delete</span>
             </Button>
           </div>
         ),

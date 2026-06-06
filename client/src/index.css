@@ -114,6 +114,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Always reserve the scrollbar gutter so opening a dialog (which locks body
+     scroll) doesn't shift/narrow the layout. */
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
   }
