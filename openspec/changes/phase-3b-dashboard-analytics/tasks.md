@@ -31,8 +31,8 @@
 
 ## 5. App shell — tabs
 
-- [ ] 5.1 Add the shadcn `Tabs` primitive (`npx shadcn@latest add tabs`)
-- [ ] 5.2 Add `Log` | `Dashboard` tabs in the shell (default `Log`); move the existing form+table grid verbatim under the Log tab and render `Dashboard` under the Dashboard tab — no router
+- [x] 5.1 Add the shadcn `Tabs` primitive (`npx shadcn@latest add tabs`)
+- [x] 5.2 Add `Log` | `Dashboard` tabs in the shell (default `Log`); move the existing form+table grid verbatim under the Log tab and render `Dashboard` under the Dashboard tab — no router
 
 ## 6. Frontend tests & verification
 
