@@ -19,17 +19,17 @@ Monorepo, two independently-run apps + shared specs:
 - **Core run CRUD** (`add-run-crud`) — `/api/runs` create/list/get/update/delete + manual-entry form + newest-first list. → tag `v0.1.0`
 - **Backend test suite** (`add-run-api-tests`) — Vitest + Supertest, isolated `test.db`. → tag `v0.1.1`
 - **GPX import** (`add-gpx-import`) — parse-only `POST /api/runs/import` + upload-to-prefill UI. → tag `v0.2.0`
+- **Edit/delete run UI** (`add-edit-delete-run-ui`) — frontend-only: per-run edit/delete controls in the list; `RunForm` reused for create+edit (prefill + ISO date-time split); delete via `window.confirm`. API (`PATCH`/`DELETE`) was already in place. → tag `v0.2.1`
 
-Current totals: **42 backend tests passing**; living specs `run-management` (11 reqs) + `gpx-import` (5 reqs). Git is **local only — no GitHub remote**; tags/releases drafted but not pushed.
+Current totals: **42 backend tests passing**; living specs `run-management` (13 reqs) + `gpx-import` (5 reqs). Git is **local only — no GitHub remote**; tags/releases drafted but not pushed. **Frontend has no test harness** — FE automated testing deferred to Phase 3 (which rebuilds these components).
 
-**Next up (do before Phase 3):**
-- **Edit/delete run UI** — its own small OpenSpec change. The API already supports `PATCH`/`DELETE` (tested); the frontend list has no edit/delete controls yet (deliberately cut from Phase 1's UI tasks). Start with `/opsx:propose`.
+**Next up:** Phase 3.
 
 **Phase 3 — Dashboard & charts + UI overhaul (bundled):**
 1. Aggregated/analytics endpoints (weekly mileage, pace trend, run-type breakdown) — separate from `GET /api/runs`; add Zod query-param validation + tests.
 2. React charts consuming them (chart lib **not yet chosen** — Recharts or Nivo; pick early).
-3. UI overhaul: adopt **shadcn/ui** (in stack, not installed), app shell + layout, **run list as a sortable data table** (natural home for the edit/delete actions — could absorb that change here), light/dark theming.
-- Watch-outs: charts need a real layout (why the UI overhaul is bundled); decide timezone handling for time-based aggregations (start times stored as submitted/UTC).
+3. UI overhaul: adopt **shadcn/ui** (in stack, not installed), app shell + layout, **run list as a sortable data table** (natural home for the now-shipped edit/delete actions — migrate them off the `window.confirm` stopgap into a styled dialog here), light/dark theming.
+- Watch-outs: charts need a real layout (why the UI overhaul is bundled); decide timezone handling for time-based aggregations (start times stored as submitted/UTC); stand up the **frontend test harness** (Vitest + React Testing Library) here.
 
 **Phase 4 (later):** search & filtering — flexible query params on `GET /api/runs` (date range, distance, run type) + filter UI.
 
