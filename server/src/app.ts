@@ -1,5 +1,6 @@
 import express from "express";
 import { runsRouter } from "./runs/router";
+import { statsRouter } from "./stats/router";
 
 // The configured Express app — no network listener, so it can be imported by
 // tests (Supertest) without binding a port. `index.ts` calls listen().
@@ -15,3 +16,6 @@ app.get("/api/health", (_req, res) => {
 
 // Run CRUD endpoints.
 app.use("/api/runs", runsRouter);
+
+// Read-only analytics endpoints (derived from runs).
+app.use("/api/stats", statsRouter);

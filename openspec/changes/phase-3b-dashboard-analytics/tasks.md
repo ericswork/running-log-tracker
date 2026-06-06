@@ -8,11 +8,11 @@
 
 ## 2. Backend — stats endpoints
 
-- [ ] 2.1 Create `server/src/stats/schemas.ts`: shared Zod query schema (`from?`/`to?` as `YYYY-MM-DD`, `timezone?` IANA-or-offset with a custom refine; `from <= to` refine)
-- [ ] 2.2 Create `server/src/stats/controller.ts`: parse query via `parseBody` pattern, `findMany` runs, call the matching aggregator, return canonical-unit JSON
-- [ ] 2.3 Create `server/src/stats/router.ts` with `GET /summary`, `/weekly`, `/pace`, `/by-type`; mount at `/api/stats` in `server/src/app.ts`
-- [ ] 2.4 Add Supertest tests (`server/tests/stats.api.test.ts`): each endpoint's shape, timezone bucketing (incl. near-midnight cross-day), zero-filled intervening weeks, empty-data responses, and 400s for invalid `timezone`, malformed `from`/`to`, and inverted range
-- [ ] 2.5 Run `npm --prefix server test` — all backend tests pass
+- [x] 2.1 Create `server/src/stats/schemas.ts`: shared Zod query schema (`from?`/`to?` as `YYYY-MM-DD`, `timezone?` IANA-or-offset with a custom refine; `from <= to` refine)
+- [x] 2.2 Create `server/src/stats/controller.ts`: parse query via `parseBody` pattern, `findMany` runs, call the matching aggregator, return canonical-unit JSON
+- [x] 2.3 Create `server/src/stats/router.ts` with `GET /summary`, `/weekly`, `/pace`, `/by-type`; mount at `/api/stats` in `server/src/app.ts`
+- [x] 2.4 Add Supertest tests (`server/tests/stats.api.test.ts`): each endpoint's shape, timezone bucketing (incl. near-midnight cross-day), zero-filled intervening weeks, empty-data responses, and 400s for invalid `timezone`, malformed `from`/`to`, and inverted range
+- [x] 2.5 Run `npm --prefix server test` — all backend tests pass
 
 ## 3. Frontend — data layer
 
