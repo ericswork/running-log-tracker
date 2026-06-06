@@ -41,6 +41,11 @@ Runtime CSS-in-JS (styled-components/Emotion) is rejected — it duplicates and 
 **Frontend test harness: Vitest + jsdom + RTL, separate config from the server.**
 The client gets its own `vitest.config.ts` (environment `jsdom`), a setup file registering `@testing-library/jest-dom` and mocking `matchMedia` (jsdom lacks it; theming/`prefers-color-scheme` needs it), and a `renderWithClient` helper that wraps components in a fresh `QueryClientProvider`. A `test` script is added to `client/package.json`. First tests cover: table sorts by a chosen column, and the edit/delete flows (dialog opens, confirm/decline behavior). Network is mocked at the `api/runs` module boundary so tests stay unit-level (no MSW for now).
 
+## Apply-time discoveries
+
+- **TS 6 deprecates `baseUrl`.** shadcn's Vite guide adds `baseUrl: "."` + `paths` to the tsconfigs, but TS 6 errors on `baseUrl` (TS5101). Fix: set `paths: { "@/*": ["./src/*"] }` **without** `baseUrl` — valid under `moduleResolution: "bundler"`, which resolves paths relative to the tsconfig. Applied to both `tsconfig.json` and `tsconfig.app.json`.
+- shadcn CLI installed `radix-ui` (the consolidated package) rather than per-component `@radix-ui/*` packages.
+
 ## Risks / Trade-offs
 
 - **shadcn/Tailwind v4 setup friction on Vite 8 / React 19** → Mitigation: follow shadcn's official Vite guide, pin known-good versions, verify `npm run build` + `npm run dev` after install before building components on top.

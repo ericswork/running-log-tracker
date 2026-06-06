@@ -6,10 +6,10 @@
 
 ## 2. Frontend test harness
 
-- [ ] 2.1 Add Vitest + React Testing Library + jsdom + `@testing-library/jest-dom` as client dev deps and a `test` script in `client/package.json`
-- [ ] 2.2 Add `client/vitest.config.ts` (jsdom environment) and a setup file registering jest-dom matchers and mocking `matchMedia` (and `ResizeObserver` if needed)
-- [ ] 2.3 Add a `renderWithClient` test helper that wraps components in a fresh `QueryClientProvider`
-- [ ] 2.4 Add a smoke test proving the harness runs green (`npm --prefix client test`)
+- [x] 2.1 Add Vitest + React Testing Library + jsdom + `@testing-library/jest-dom` as client dev deps and a `test` script in `client/package.json`
+- [x] 2.2 Add `client/vitest.config.ts` (jsdom environment) and a setup file registering jest-dom matchers and mocking `matchMedia` (and `ResizeObserver` if needed)
+- [x] 2.3 Add a `renderWithClient` test helper that wraps components in a fresh `QueryClientProvider`
+- [x] 2.4 Add a smoke test proving the harness runs green (`npm --prefix client test`)
 
 ## 3. App shell + theming
 
