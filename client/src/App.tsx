@@ -1,19 +1,22 @@
+import { ThemeProvider } from './components/layout/ThemeProvider'
+import { AppShell } from './components/layout/AppShell'
 import { RunForm } from './components/RunForm'
 import { RunList } from './components/RunList'
 
 function App() {
   return (
-    <main style={{ maxWidth: 640, margin: '2rem auto', padding: '0 1rem' }}>
-      <h1>Running Log</h1>
-      <section>
-        <h2>Add a run</h2>
-        <RunForm />
-      </section>
-      <section style={{ marginTop: '2rem' }}>
-        <h2>Runs</h2>
-        <RunList />
-      </section>
-    </main>
+    <ThemeProvider defaultTheme="system">
+      <AppShell>
+        <section className="mb-8">
+          <h2 className="mb-2 text-lg font-medium">Add a run</h2>
+          <RunForm />
+        </section>
+        <section>
+          <h2 className="mb-2 text-lg font-medium">Runs</h2>
+          <RunList />
+        </section>
+      </AppShell>
+    </ThemeProvider>
   )
 }
 

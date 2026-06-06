@@ -30,3 +30,31 @@ if (!window.ResizeObserver) {
     disconnect() {}
   }
 }
+
+// jsdom's Storage here is partial (no clear()). Use a complete, deterministic
+// in-memory localStorage so theme persistence tests are reliable.
+class LocalStorageMock implements Storage {
+  private store = new Map<string, string>()
+  get length() {
+    return this.store.size
+  }
+  clear() {
+    this.store.clear()
+  }
+  getItem(key: string) {
+    return this.store.get(key) ?? null
+  }
+  setItem(key: string, value: string) {
+    this.store.set(key, String(value))
+  }
+  removeItem(key: string) {
+    this.store.delete(key)
+  }
+  key(index: number) {
+    return Array.from(this.store.keys())[index] ?? null
+  }
+}
+Object.defineProperty(window, 'localStorage', {
+  value: new LocalStorageMock(),
+  writable: true,
+})
