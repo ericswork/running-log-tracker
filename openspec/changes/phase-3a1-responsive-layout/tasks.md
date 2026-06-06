@@ -6,9 +6,9 @@
 
 ## 2. Responsive two-column layout
 
-- [ ] 2.1 Widen the app shell max-width so two columns fit (e.g. `max-w-3xl` → `max-w-5xl`)
-- [ ] 2.2 In `App.tsx`, lay out the main content as a responsive grid: at `md`+ two columns `md:grid-cols-[1fr_2fr]` (form left, run list right); single column below `md`
-- [ ] 2.3 Make the inline create `RunForm` desktop-only (`hidden md:block`) so mobile shows only the run list
+- [x] 2.1 Widen the app shell max-width so two columns fit (`max-w-3xl` → `max-w-5xl`, header + main)
+- [x] 2.2 In `App.tsx`, lay out the main content as a responsive grid: at `md`+ two columns `md:grid-cols-[1fr_2fr]` (form left, run list right); single column below `md`
+- [x] 2.3 Make the inline create `RunForm` desktop-only (`hidden md:block`) so mobile shows only the run list
 
 ## 3. Mobile "Add run" overlay
 
