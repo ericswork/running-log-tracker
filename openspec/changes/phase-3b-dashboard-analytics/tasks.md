@@ -1,10 +1,10 @@
 ## 1. Backend — bucketing core (pure functions)
 
-- [ ] 1.1 Create `server/src/stats/buckets.ts` with timezone resolution (IANA via `Intl` try/catch; fixed `±HH:MM`/`±HHMM`/`Z` offset shim; absent → UTC) and a helper returning a run's local `YYYY-MM-DD` and Monday `weekStart` in the resolved timezone
-- [ ] 1.2 Implement pure aggregators in `buckets.ts`: `summarize(runs)`, `weeklyMileage(runs, tz)`, `paceTrend(runs, tz)`, `typeBreakdown(runs)` — canonical units only, weeks ascending, by-type ordered by `RUN_TYPES`, empty input → empty/zeroed output
-- [ ] 1.3 Zero-fill the weekly series in `weeklyMileage`/`paceTrend`: emit every week between the first and last of the span (`from`/`to` range when both given, else first→last week with runs) with zero totals for empty weeks
-- [ ] 1.4 Implement inclusive date-range filtering by local calendar date in the resolved timezone
-- [ ] 1.5 Unit-test `buckets.ts` (Vitest): multi-week bucketing, zero-fill of intervening empty weeks, near-midnight cross-day timezone case (one timestamp → different weeks under two timezones), by-type ordering, empty-data, and date-range filtering
+- [x] 1.1 Create `server/src/stats/buckets.ts` with timezone resolution (IANA via `Intl` try/catch; fixed `±HH:MM`/`±HHMM`/`Z` offset shim; absent → UTC) and a helper returning a run's local `YYYY-MM-DD` and Monday `weekStart` in the resolved timezone
+- [x] 1.2 Implement pure aggregators in `buckets.ts`: `summarize(runs)`, `weeklyMileage(runs, tz)`, `paceTrend(runs, tz)`, `typeBreakdown(runs)` — canonical units only, weeks ascending, by-type ordered by `RUN_TYPES`, empty input → empty/zeroed output
+- [x] 1.3 Zero-fill the weekly series in `weeklyMileage`/`paceTrend`: emit every week between the first and last of the span (`from`/`to` range when both given, else first→last week with runs) with zero totals for empty weeks
+- [x] 1.4 Implement inclusive date-range filtering by local calendar date in the resolved timezone
+- [x] 1.5 Unit-test `buckets.ts` (Vitest): multi-week bucketing, zero-fill of intervening empty weeks, near-midnight cross-day timezone case (one timestamp → different weeks under two timezones), by-type ordering, empty-data, and date-range filtering
 
 ## 2. Backend — stats endpoints
 
