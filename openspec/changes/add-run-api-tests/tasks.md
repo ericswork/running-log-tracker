@@ -6,16 +6,16 @@
 
 ## 2. App refactor for testability
 
-- [ ] 2.1 Create `server/src/app.ts` exporting the configured Express `app` (middleware + `/api/health` + `/api/runs` router), with no `app.listen()`
-- [ ] 2.2 Slim `server/src/index.ts` to import `app` from `./app` and call `app.listen()`
-- [ ] 2.3 Verify the server still boots and `/api/health` responds (no behavior change)
+- [x] 2.1 Create `server/src/app.ts` exporting the configured Express `app` (middleware + `/api/health` + `/api/runs` router), with no `app.listen()`
+- [x] 2.2 Slim `server/src/index.ts` to import `app` from `./app` and call `app.listen()`
+- [x] 2.3 Verify the server still boots and `/api/health` responds (no behavior change)
 
 ## 3. Test database isolation
 
-- [ ] 3.1 In Vitest `setupFiles`, set `process.env.DATABASE_URL = "file:./test.db"` inline (no `.env.test`) so it runs before `src/prisma.ts` is first imported (dotenv won't override an already-set value)
-- [ ] 3.2 Apply the schema to the test DB with `prisma db push` in globalSetup
-- [ ] 3.3 Reset data between tests (delete all `Run` rows in `beforeEach`) so tests are independent
-- [ ] 3.4 Confirm the test DB file is gitignored and `dev.db` is never touched by the suite
+- [x] 3.1 In Vitest `setupFiles`, set `process.env.DATABASE_URL = "file:./test.db"` inline (no `.env.test`) so it runs before `src/prisma.ts` is first imported (dotenv won't override an already-set value)
+- [x] 3.2 Apply the schema to the test DB with `prisma db push` in globalSetup
+- [x] 3.3 Reset data between tests (delete all `Run` rows in `beforeEach`) so tests are independent
+- [x] 3.4 Confirm the test DB file is gitignored and `dev.db` is never touched by the suite
 
 ## 4. API integration tests (Supertest)
 
