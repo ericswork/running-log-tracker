@@ -1,8 +1,13 @@
 # Running Log & Training Dashboard
 
-A full-stack app for logging runs and visualizing training — log runs manually (GPX upload and charts coming in later phases), then track mileage, pace, and run-type trends. Built with React + TypeScript on the frontend and Express + Prisma on the backend, developed spec-driven with [OpenSpec](https://github.com/Fission-AI/OpenSpec).
+A full-stack web app for logging runs and tracking training. Record runs by hand or by uploading a GPS track, then review your history — with mileage, pace, and run-type insights as the dashboard grows. Built with React + TypeScript on the frontend and Express + Prisma on the backend, and developed spec-driven with [OpenSpec](https://github.com/Fission-AI/OpenSpec).
 
-> **Status:** Phase 1 (Core CRUD) complete. See [Roadmap](#roadmap).
+## Features
+
+- **Run logging** — record a run's distance, duration, start date & time, type (Easy, Recovery, Tempo, Interval, Long Run, Race), and optional notes.
+- **GPX import** — upload a `.gpx` file (from a watch, Strava, etc.) and the entry form auto-fills distance, duration, and start time from the track; you review and save.
+- **REST API** — full create/read/update/delete for runs, with schema validation and structured error responses.
+- **Run history** — browse logged runs, newest first.
 
 ## Tech stack
 
@@ -10,26 +15,25 @@ A full-stack app for logging runs and visualizing training — log runs manually
 |---|---|
 | **Frontend** | Vite, React 19, TypeScript, TanStack React Query |
 | **Backend** | Express 5, TypeScript (run via `tsx`), Prisma 7 + SQLite (better-sqlite3 driver adapter), Zod |
+| **Uploads / parsing** | Multer (in-memory), `@we-gold/gpxjs` |
+| **Testing** | Vitest + Supertest (backend) |
 | **Tooling** | OpenSpec (spec-driven workflow), `concurrently` (root dev launcher) |
 
-## Project structure
+## Architecture
+
+A monorepo with two independently-run apps and a shared spec directory:
 
 ```
 running-log-tracker/
-├── client/          # Vite + React + TypeScript app
-│   └── src/
-│       ├── api/         # typed API client (runs.ts)
-│       └── components/  # RunForm, RunList
-├── server/          # Express + TypeScript API
-│   ├── prisma/          # schema.prisma + migrations
-│   └── src/
-│       ├── runs/        # controller, router, schemas, constants
-│       ├── lib/         # validation helpers
-│       ├── prisma.ts    # PrismaClient singleton (+ adapter)
-│       └── index.ts     # Express entry point
-├── openspec/        # specs and change proposals (spec-driven dev)
-└── package.json     # root dev launcher (runs client + server together)
+├── client/      # Vite + React + TypeScript app (form, run list, typed API client)
+├── server/      # Express + TypeScript API
+│   ├── prisma/      # schema + migrations (SQLite)
+│   └── src/         # app + routes/controllers, validation, GPX parsing, Prisma client
+├── openspec/    # living specs + change history (spec-driven development)
+└── package.json # root dev launcher (runs client + server together)
 ```
+
+The frontend talks to the backend over `/api`; in development, Vite proxies those requests to the Express server.
 
 ## Getting started
 
@@ -65,6 +69,13 @@ npm run dev
 
 One `Ctrl-C` stops both; logs are labeled `[server]` / `[client]`.
 
+### Test
+
+```bash
+npm --prefix server test        # run the backend test suite
+npm --prefix server run test:watch
+```
+
 ## API
 
 Base path: `/api`
@@ -77,6 +88,7 @@ Base path: `/api`
 | `GET` | `/api/runs/:id` | Get a run by id |
 | `PATCH` | `/api/runs/:id` | Update a run (partial) |
 | `DELETE` | `/api/runs/:id` | Delete a run |
+| `POST` | `/api/runs/import` | Parse an uploaded `.gpx` and return run fields (does not persist) |
 
 ### Run model
 
@@ -92,9 +104,16 @@ Base path: `/api`
 
 Request bodies are validated with Zod; invalid input returns `400` with a structured error body, and missing records return `404`.
 
+## Conventions
+
+- **Units & time** — distance is stored in kilometers and duration in whole seconds (the canonical units); the start date-time preserves the time of day. Display formatting is a frontend concern.
+- **GPX uploads** are parsed in memory and never written to disk.
+- **SQLite** is used for local development; the database file is gitignored.
+- **Single-user, no authentication** — this is a personal/practice project.
+
 ## Development workflow
 
-This project uses **OpenSpec** for spec-driven development. Each feature is a *change*: write a proposal + spec + tasks, implement against them, then archive (folding the delta into the living specs under `openspec/specs/`).
+This project uses **OpenSpec** for spec-driven development. Each feature is a *change*: write a proposal + spec + tasks, implement against them, then archive (folding the delta into the living specs under `openspec/specs/`). Automated tests are added alongside the code they cover.
 
 ```bash
 /opsx:propose   # draft a new change (proposal, design, specs, tasks)
@@ -102,15 +121,13 @@ This project uses **OpenSpec** for spec-driven development. Each feature is a *c
 /opsx:archive   # finalize and update living specs
 ```
 
+The current capability specs live in [`openspec/specs/`](openspec/specs/).
+
 ## Roadmap
 
-- [x] **Phase 1 — Core CRUD:** manual run entry, full stack wired end-to-end
-- [ ] **Phase 2 — File upload:** Multer + GPX parser, auto-populate runs from `.gpx`
-- [ ] **Phase 3 — Dashboard & charts:** aggregated endpoints + React charts; UI overhaul (shadcn/ui, app shell, data table, theming)
-- [ ] **Phase 4 — Search & filtering:** flexible query params + controlled filter UI
+Planned, in no fixed order:
 
-### Known limitations (Phase 1)
-- UI is intentionally minimal — a full design pass lands in Phase 3
-- No automated tests yet (endpoints verified manually; a Vitest + Supertest suite is planned)
-- Distance is kilometers-only; single-user; no authentication
-- SQLite is for local development, not production
+- Edit and delete runs from the UI
+- Dashboard with charts (weekly mileage, pace trend, run-type breakdown)
+- Search and filtering (by date range, distance, run type)
+- UI/design polish (component library, theming, sortable data table)
