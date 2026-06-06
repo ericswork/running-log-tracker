@@ -28,11 +28,11 @@
 
 ## 5. Unit tests (schemas + validation helper)
 
-- [ ] 5.1 `createRunSchema`: valid input passes; type defaults to `Easy`; invalid type rejected; missing required field rejected; non-positive distance/duration rejected
-- [ ] 5.2 `updateRunSchema`: partial input accepted; invalid value rejected
-- [ ] 5.3 `parseBody`: returns typed data on success; returns `{ ok: false, status: 400, body }` with structured details on failure
+- [x] 5.1 `createRunSchema`: valid input passes; type defaults to `Easy`; invalid type rejected; missing required field rejected; non-positive distance/duration rejected
+- [x] 5.2 `updateRunSchema`: partial input accepted; invalid value rejected
+- [x] 5.3 `parseBody`: returns typed data on success; returns `{ ok: false, status: 400, body }` with structured details on failure
 
 ## 6. Verification
 
-- [ ] 6.1 Run `npm --prefix server test` — all tests pass
-- [ ] 6.2 Confirm `dev.db` is unchanged and the test DB is gitignored / not committed
+- [x] 6.1 Run `npm --prefix server test` — all tests pass
+- [x] 6.2 Confirm `dev.db` is unchanged and the test DB is gitignored / not committed
