@@ -16,10 +16,10 @@
 
 ## 3. Frontend — data layer
 
-- [ ] 3.1 Add `recharts` to `client` dependencies
-- [ ] 3.2 Create `client/src/api/stats.ts`: four fetchers on relative `/api/stats/*` paths, attaching the browser timezone (`Intl.DateTimeFormat().resolvedOptions().timeZone`) and optional `from`/`to`
-- [ ] 3.3 Create React Query hooks under `features/dashboard/` (`useSummary`, `useWeekly`, `usePaceTrend`, `useTypeBreakdown`)
-- [ ] 3.4 Create client formatting helpers (`formatPace`, `formatDuration`, `formatDistance`, avg-pace derivation) and unit-test them
+- [x] 3.1 Add `recharts` to `client` dependencies
+- [x] 3.2 Create `client/src/api/stats.ts`: four fetchers on relative `/api/stats/*` paths, attaching the browser timezone (`Intl.DateTimeFormat().resolvedOptions().timeZone`) and optional `from`/`to`
+- [x] 3.3 Create React Query hooks under `features/dashboard/` (`useSummary`, `useWeekly`, `usePaceTrend`, `useTypeBreakdown`)
+- [x] 3.4 Create client formatting helpers (`formatPace`, `formatDuration`, `formatDistance`, avg-pace derivation) and unit-test them
 
 ## 4. Frontend — dashboard view
 
