@@ -19,12 +19,12 @@
 
 ## 4. API integration tests (Supertest)
 
-- [ ] 4.1 Create → 201 with the created run; type defaults to `Easy` when omitted; start time-of-day preserved (not midnight)
-- [ ] 4.2 List → 200 newest-first; 200 with empty array when none
-- [ ] 4.3 Get by id → 200 when found; 404 when not found
-- [ ] 4.4 Update (PATCH) → 200 partial update; 404 when not found; 400 on invalid value
-- [ ] 4.5 Delete → 204 when found; 404 when not found
-- [ ] 4.6 Validation → 400 on invalid run type, missing required fields, and non-positive distance/duration (and not persisted)
+- [x] 4.1 Create → 201 with the created run; type defaults to `Easy` when omitted; start time-of-day preserved (not midnight)
+- [x] 4.2 List → 200 newest-first; 200 with empty array when none
+- [x] 4.3 Get by id → 200 when found; 404 when not found
+- [x] 4.4 Update (PATCH) → 200 partial update; 404 when not found; 400 on invalid value
+- [x] 4.5 Delete → 204 when found; 404 when not found
+- [x] 4.6 Validation → 400 on invalid run type, missing required fields, and non-positive distance/duration (and not persisted)
 
 ## 5. Unit tests (schemas + validation helper)
 
