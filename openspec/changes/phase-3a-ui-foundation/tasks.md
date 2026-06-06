@@ -22,10 +22,10 @@
 
 ## 4. Run list as a sortable data table
 
-- [ ] 4.1 Add `@tanstack/react-table` and build a shadcn data table for runs with columns date, distance, duration, type (formatting unchanged — km + h:mm:ss, locale date-time)
-- [ ] 4.2 Enable client-side sorting on date, distance, duration, and type; default sort = date descending (preserves newest-first)
-- [ ] 4.3 Add an actions column with per-row Edit and Delete controls
-- [ ] 4.4 Add a test asserting that sorting by a column reorders the displayed runs
+- [x] 4.1 Add `@tanstack/react-table` and build a shadcn data table for runs with columns date, distance, duration, type (formatting unchanged — km + h:mm:ss, locale date-time)
+- [x] 4.2 Enable client-side sorting on date, distance, duration, and type; default sort = date descending (preserves newest-first)
+- [x] 4.3 Add an actions column with per-row Edit and Delete controls (wired in the container to current behavior — interim edit-above-table + `window.confirm`; Group 5 upgrades to Dialog/AlertDialog)
+- [x] 4.4 Add a test asserting that sorting by a column reorders the displayed runs (default date-desc + Distance asc/desc)
 
 ## 5. Edit + delete in the table
 
