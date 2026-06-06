@@ -7,10 +7,10 @@
 
 ## 2. Import endpoint
 
-- [ ] 2.1 Configure Multer with `memoryStorage()` and a `limits.fileSize` cap (single file field)
-- [ ] 2.2 Add `POST /api/runs/import` to the runs router, wired through Multer
-- [ ] 2.3 Controller: validate file presence + `.gpx` extension; on success parse the buffer and return 200 with `{ distanceKm, durationSec?, date? }` (no persistence)
-- [ ] 2.4 Map all failure modes to HTTP 400 with a structured error body: missing file, wrong type, oversized (Multer limit), malformed GPX, no track points
+- [x] 2.1 Configure Multer with `memoryStorage()` and a `limits.fileSize` cap (single file field)
+- [x] 2.2 Add `POST /api/runs/import` to the runs router, wired through Multer
+- [x] 2.3 Controller: validate file presence + `.gpx` extension; on success parse the buffer and return 200 with `{ distanceKm, durationSec?, date? }` (no persistence)
+- [x] 2.4 Map all failure modes to HTTP 400 with a structured error body: missing file, wrong type, oversized (Multer limit), malformed GPX, no track points
 
 ## 3. Frontend upload
 
@@ -25,4 +25,4 @@
 - [ ] 4.2 Backend: verify 400s for missing file, non-`.gpx`, oversized, malformed, and no-track-points cases
 - [ ] 4.3 Backend: verify a no-timestamp GPX returns `distanceKm` only
 - [ ] 4.4 Frontend: upload a `.gpx` in the browser → form pre-fills → review → save creates the run via the existing flow
-- [ ] 4.5 Add backend tests for the GPX-parsing module and the import endpoint (Vitest + Supertest), consistent with the existing suite
+- [x] 4.5 Add backend tests for the GPX-parsing module and the import endpoint (Vitest + Supertest), consistent with the existing suite (brought forward, right after the endpoint was built)
