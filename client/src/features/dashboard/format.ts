@@ -40,3 +40,15 @@ export function formatDuration(totalSec: number): string {
 export function formatDistance(km: number): string {
   return `${km.toFixed(1)} km`;
 }
+
+// A week-start "YYYY-MM-DD" → short axis label like "Jun 1". Parsed as UTC so
+// the label matches the server's local week-start date exactly (no tz shift).
+export function formatWeekLabel(weekStart: string): string {
+  const [y, m, d] = weekStart.split("-").map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}

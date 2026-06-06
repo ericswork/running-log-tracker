@@ -23,11 +23,11 @@
 
 ## 4. Frontend — dashboard view
 
-- [ ] 4.1 Build summary cards (total runs, distance, time, avg pace) using shadcn Card primitives
-- [ ] 4.2 Build the weekly-mileage bar chart, pace-trend line chart, and run-type pie/donut with Recharts wrapped in `ResponsiveContainer`; render zero-run weeks as a null/gap point in the pace line (not zero pace)
-- [ ] 4.3 Add a "hide empty weeks" toggle (default off) that filters `runCount === 0` weeks out of the weekly time-series charts client-side (no refetch)
-- [ ] 4.4 Add a graceful "No runs yet" empty state per chart and for the summary area
-- [ ] 4.5 Compose `features/dashboard/Dashboard.tsx` laying the cards + charts within the existing responsive shell (single column on mobile)
+- [x] 4.1 Build summary cards (total runs, distance, time, avg pace) using shadcn Card primitives
+- [x] 4.2 Build the weekly-mileage bar chart, pace-trend line chart, and run-type pie/donut with Recharts wrapped in `ResponsiveContainer`; render zero-run weeks as a null/gap point in the pace line (not zero pace)
+- [x] 4.3 Add a "hide empty weeks" toggle (default off) that filters `runCount === 0` weeks out of the weekly time-series charts client-side (no refetch)
+- [x] 4.4 Add a graceful "No runs yet" empty state per chart and for the summary area
+- [x] 4.5 Compose `features/dashboard/Dashboard.tsx` laying the cards + charts within the existing responsive shell (single column on mobile)
 
 ## 5. App shell — tabs
 
