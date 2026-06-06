@@ -16,7 +16,7 @@ The client is Vite + React 19 + TS with TanStack React Query. UI today is unstyl
 - No analytics endpoints or charts (Phase 3B).
 - No backend, schema, or API changes; the 42-test backend suite stays green and untouched.
 - No search/filtering (Phase 4), no pagination, no column show/hide, no virtualization.
-- No change to RunForm's field set, validation, or date/time-of-day handling — it is restyled and re-homed only.
+- No change to RunForm's field set, validation, or date/time-of-day handling — it is restyled and re-homed only. **(Amended during apply, user-approved:** scope expanded to fix one pre-existing validation bug — empty duration was sent to the API and rejected with a 400; now blocked client-side. See Apply-time discoveries.)
 
 ## Decisions
 
@@ -45,6 +45,9 @@ The client gets its own `vitest.config.ts` (environment `jsdom`), a setup file r
 
 - **TS 6 deprecates `baseUrl`.** shadcn's Vite guide adds `baseUrl: "."` + `paths` to the tsconfigs, but TS 6 errors on `baseUrl` (TS5101). Fix: set `paths: { "@/*": ["./src/*"] }` **without** `baseUrl` — valid under `moduleResolution: "bundler"`, which resolves paths relative to the tsconfig. Applied to both `tsconfig.json` and `tsconfig.app.json`.
 - shadcn CLI installed `radix-ui` (the consolidated package) rather than per-component `@radix-ui/*` packages.
+- **jsdom ships a partial `localStorage` (no `clear()`)** in this Vitest/jsdom version, which broke the theme-persistence tests. Added a complete in-memory `localStorage` mock in `src/test/setup.ts`.
+- **Tailwind v4 preflight strips native form-control styling.** Re-homing `RunForm` as raw `<input>`/`<select>` made the inputs render invisible once preflight applied. Restyling RunForm with shadcn primitives was implied by the Non-Goals ("RunForm is restyled and re-homed only") but missing from the task list — added as task 3.5. The native run-type `<select>` became a shadcn `Select` (Radix), changing its handler from `onChange` to `onValueChange` (no behavior change to the submitted payload). The GPX file input was hidden behind a styled Button (a file input rendered as a text-field-looking box).
+- **Pre-existing empty-duration bug surfaced during manual review.** Duration spans three inputs (h/m/s) with no `required`, so an empty duration produced `durationSec: 0`, was sent to the API, and rejected with a 400 — the client never validated it. This predates Phase 3A. With the user's approval we expanded scope (task 3.6) to validate `durationSec > 0` client-side before submit, and added `RunForm.test.tsx` as the first RunForm component coverage.
 
 ## Risks / Trade-offs
 

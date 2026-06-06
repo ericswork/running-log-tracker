@@ -13,10 +13,12 @@
 
 ## 3. App shell + theming
 
-- [ ] 3.1 Add a `ThemeProvider` that toggles a `dark` class on `<html>`, persists the choice in localStorage, and defaults to system preference
-- [ ] 3.2 Replace the bare `App.tsx` with an app shell (header + main content region); place the theme toggle in the header
-- [ ] 3.3 Re-home `RunForm` and the run list into the main content region (behavior unchanged)
-- [ ] 3.4 Add tests: theme toggle switches appearance, and the chosen theme persists across a reload
+- [x] 3.1 Add a `ThemeProvider` that toggles a `dark` class on `<html>`, persists the choice in localStorage, and defaults to system preference
+- [x] 3.2 Replace the bare `App.tsx` with an app shell (header + main content region); place the theme toggle in the header
+- [x] 3.3 Re-home `RunForm` and the run list into the main content region (behavior unchanged)
+- [x] 3.4 Add tests: theme toggle switches appearance, and the chosen theme persists across a reload
+- [x] 3.5 Restyle `RunForm` with shadcn form primitives (Input/Label/Select/Textarea/Button) — Tailwind's preflight reset stripped native control styling, so the re-homed raw `<input>`/`<select>` rendered invisible. Logic/state/payload unchanged; native run-type `<select>` → shadcn `Select`. GPX file input → hidden input behind a styled Button.
+- [x] 3.6 Fix pre-existing empty-duration bug (consciously expands the "freeze RunForm logic" Non-Goal, per user): block submit client-side when total duration ≤ 0 and show an error, instead of relying on the server 400. Added `RunForm.test.tsx` (empty duration → no API call + error shown; valid duration → expected payload submitted) — the first RunForm component tests.
 
 ## 4. Run list as a sortable data table
 
