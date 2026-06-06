@@ -43,5 +43,5 @@
 
 ## 7. Wrap-up
 
-- [ ] 7.1 Update `CLAUDE.md` (status/continuity, layout, API, key decisions) for the new `/api/stats` surface and `features/dashboard/`
-- [ ] 7.2 Confirm change ready for `/opsx:archive` (tag target `v0.3.1`)
+- [x] 7.1 Update `CLAUDE.md` (status/continuity, layout, API, key decisions) for the new `/api/stats` surface and `features/dashboard/`
+- [x] 7.2 Confirm change ready for `/opsx:archive` (tag target `v0.3.1`)
