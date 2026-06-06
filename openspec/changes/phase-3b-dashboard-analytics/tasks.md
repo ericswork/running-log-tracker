@@ -36,10 +36,10 @@
 
 ## 6. Frontend tests & verification
 
-- [ ] 6.1 Add RTL test: dashboard renders summary cards + chart containers given mocked `api/stats` fixture data
-- [ ] 6.2 Add RTL test: dashboard empty state with no runs; "hide empty weeks" toggle filters zero-run weeks from the shaped chart data; Log/Dashboard tab switch renders the right content
-- [ ] 6.3 Run `npm --prefix client test` — all frontend tests pass
-- [ ] 6.4 Manual verification: run `npm run dev`, confirm charts size/responsiveness, timezone bucketing, and empty state visually (jsdom can't assert Recharts SVG)
+- [x] 6.1 Add RTL test: dashboard renders summary cards + chart containers given mocked `api/stats` fixture data
+- [x] 6.2 Add RTL test: dashboard empty state with no runs; "hide empty weeks" toggle filters zero-run weeks from the shaped chart data; Log/Dashboard tab switch renders the right content
+- [x] 6.3 Run `npm --prefix client test` — all frontend tests pass
+- [x] 6.4 Manual verification: run `npm run dev`, confirm charts size/responsiveness, timezone bucketing, and empty state visually (jsdom can't assert Recharts SVG)
 
 ## 7. Wrap-up
 
