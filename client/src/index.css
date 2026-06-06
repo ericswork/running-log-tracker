@@ -117,4 +117,11 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Native date/time picker icons render dark by default; invert them in dark
+     mode so the calendar/clock indicators stay visible. */
+  .dark input[type='date']::-webkit-calendar-picker-indicator,
+  .dark input[type='time']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
 }

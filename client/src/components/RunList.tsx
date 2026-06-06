@@ -3,6 +3,23 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchRuns, deleteRun, type Run } from '../api/runs'
 import { RunForm } from './RunForm'
 import { RunsTable } from '@/features/runs/RunsTable'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 export function RunList() {
   const queryClient = useQueryClient()
@@ -13,20 +30,23 @@ export function RunList() {
     queryFn: fetchRuns,
   })
 
-  // The run currently being edited, if any. Only one at a time.
+  // Only one run is edited (Dialog) or pending deletion (AlertDialog) at a time.
   const [editingRun, setEditingRun] = useState<Run | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<Run | null>(null)
 
   const deleteMutation = useMutation({
-    mutationFn: deleteRun,
+    // Wrap so deleteRun only ever receives the id — React Query v5 passes a
+    // context object as a second arg to a bare mutationFn.
+    mutationFn: (id: string) => deleteRun(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['runs'] })
     },
   })
 
-  function handleDelete(run: Run) {
-    // Interim confirmation; Group 5 replaces this with a styled AlertDialog.
-    if (!window.confirm(`Delete this ${run.type} run?`)) return
-    deleteMutation.mutate(run.id)
+  function confirmDelete() {
+    if (!pendingDelete) return
+    deleteMutation.mutate(pendingDelete.id)
+    setPendingDelete(null)
   }
 
   if (isLoading) return <p className="text-muted-foreground">Loading runs…</p>
@@ -37,15 +57,51 @@ export function RunList() {
   if (runs.length === 0) return <p className="text-muted-foreground">No runs yet. Add one above.</p>
 
   return (
-    <div className="grid gap-4">
-      {/* Interim: editing renders the form above the table. Group 5 moves this
-          into a shadcn Dialog. */}
-      {editingRun && (
-        <div className="rounded-md border p-4">
-          <RunForm initialRun={editingRun} onDone={() => setEditingRun(null)} />
-        </div>
-      )}
-      <RunsTable runs={runs} onEdit={setEditingRun} onDelete={handleDelete} />
-    </div>
+    <>
+      <RunsTable runs={runs} onEdit={setEditingRun} onDelete={setPendingDelete} />
+
+      {/* Edit: the run-entry form, prefilled, inside a dialog. */}
+      <Dialog
+        open={editingRun !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditingRun(null)
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit run</DialogTitle>
+            <DialogDescription>Update the details of this run.</DialogDescription>
+          </DialogHeader>
+          {editingRun && (
+            <RunForm
+              key={editingRun.id}
+              initialRun={editingRun}
+              onDone={() => setEditingRun(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete: explicit confirmation; declining makes no API call. */}
+      <AlertDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this run?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes the {pendingDelete?.type} run. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }

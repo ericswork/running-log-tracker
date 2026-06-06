@@ -29,12 +29,12 @@
 
 ## 5. Edit + delete in the table
 
-- [ ] 5.1 Wire the row Edit control to open `RunForm` (with `initialRun`) inside a shadcn `Dialog`; Save/Cancel close it via the existing `onDone` callback
-- [ ] 5.2 Replace the `window.confirm` delete with a shadcn `AlertDialog`; confirming calls the `deleteRun` mutation (invalidates `['runs']`), declining makes no API call
-- [ ] 5.3 Add tests: edit dialog opens prefilled and saving submits an update; delete confirm removes the run and decline makes no delete request
+- [x] 5.1 Wire the row Edit control to open `RunForm` (with `initialRun`) inside a shadcn `Dialog`; Save/Cancel close it via the existing `onDone` callback
+- [x] 5.2 Replace the `window.confirm` delete with a shadcn `AlertDialog`; confirming calls the `deleteRun` mutation (invalidates `['runs']`), declining makes no API call
+- [x] 5.3 Add tests: edit dialog opens prefilled and saving submits an update; delete confirm removes the run and decline makes no delete request
 
 ## 6. Verify
 
-- [ ] 6.1 Run the full client test suite (`npm --prefix client test`) — all green
-- [ ] 6.2 Confirm `npm --prefix client run build` typechecks/builds and the backend suite is untouched (`npm --prefix server test` still 42/42)
-- [ ] 6.3 Manually verify in the dev app: table sorts by each column, edit dialog and delete confirmation work, theme toggle persists, and create/edit still submit unchanged payloads
+- [x] 6.1 Run the full client test suite (`npm --prefix client test`) — all green (13/13)
+- [x] 6.2 Confirm `npm --prefix client run build` typechecks/builds and the backend suite is untouched (`npm --prefix server test` still 42/42)
+- [ ] 6.3 Manually verify in the dev app: table sorts by each column, edit dialog and delete confirmation work, theme toggle persists, and create/edit still submit unchanged payloads — _awaiting user click-through_
