@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   createRun,
@@ -8,6 +8,17 @@ import {
   type Run,
   type RunType,
 } from '../api/runs'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -51,6 +62,8 @@ export function RunForm({ initialRun, onDone }: RunFormProps = {}) {
 
   const [importing, setImporting] = useState(false)
   const [importError, setImportError] = useState<string | null>(null)
+  const [durationError, setDurationError] = useState<string | null>(null)
+  const gpxInputRef = useRef<HTMLInputElement>(null)
 
   async function handleGpxChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -108,6 +121,14 @@ export function RunForm({ initialRun, onDone }: RunFormProps = {}) {
       (Number(minutes) || 0) * 60 +
       (Number(seconds) || 0)
 
+    // Duration spans three inputs, so the browser's `required` can't enforce it.
+    // Guard here so a zero/empty duration never reaches the API (which 400s).
+    if (durationSec <= 0) {
+      setDurationError('Enter a duration greater than zero.')
+      return
+    }
+    setDurationError(null)
+
     // Combine the separate date + time inputs into a single ISO 8601 date-time.
     const iso = new Date(`${date}T${time}`).toISOString()
 
@@ -121,24 +142,39 @@ export function RunForm({ initialRun, onDone }: RunFormProps = {}) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '0.75rem' }}>
+    <form onSubmit={handleSubmit} className="grid gap-4">
       {/* GPX import is a create-only affordance; hidden when editing a run. */}
       {!isEditing && (
-        <>
-          <label>
-            Import from GPX
-            <input type="file" accept=".gpx" onChange={handleGpxChange} disabled={importing} />
-          </label>
-          {importing && <p>Parsing GPX…</p>}
+        <div className="grid gap-2">
+          <Label>Import from GPX</Label>
+          {/* Hidden native input; the Button below is the visible trigger. */}
+          <input
+            ref={gpxInputRef}
+            type="file"
+            accept=".gpx"
+            className="hidden"
+            onChange={handleGpxChange}
+            disabled={importing}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            className="w-fit"
+            onClick={() => gpxInputRef.current?.click()}
+            disabled={importing}
+          >
+            {importing ? 'Parsing GPX…' : 'Choose GPX file…'}
+          </Button>
           {importError && (
-            <p style={{ color: 'crimson' }}>Could not import GPX: {importError}</p>
+            <p className="text-sm text-destructive">Could not import GPX: {importError}</p>
           )}
-        </>
+        </div>
       )}
 
-      <label>
-        Distance (km)
-        <input
+      <div className="grid gap-2">
+        <Label htmlFor="distanceKm">Distance (km)</Label>
+        <Input
+          id="distanceKm"
           type="number"
           step="any"
           min="0.01"
@@ -146,67 +182,102 @@ export function RunForm({ initialRun, onDone }: RunFormProps = {}) {
           value={distanceKm}
           onChange={(e) => setDistanceKm(e.target.value)}
         />
-      </label>
+      </div>
 
-      <fieldset style={{ display: 'flex', gap: '0.5rem', alignItems: 'end' }}>
-        <legend>Duration</legend>
-        <label>
-          h
-          <input type="number" min="0" value={hours} onChange={(e) => setHours(e.target.value)} />
-        </label>
-        <label>
-          m
-          <input type="number" min="0" max="59" value={minutes} onChange={(e) => setMinutes(e.target.value)} />
-        </label>
-        <label>
-          s
-          <input type="number" min="0" max="59" value={seconds} onChange={(e) => setSeconds(e.target.value)} />
-        </label>
-      </fieldset>
+      <div className="grid gap-2">
+        <Label>Duration</Label>
+        <div className="flex items-center gap-2">
+          <Input
+            aria-label="hours"
+            type="number"
+            min="0"
+            placeholder="h"
+            value={hours}
+            onChange={(e) => setHours(e.target.value)}
+          />
+          <Input
+            aria-label="minutes"
+            type="number"
+            min="0"
+            max="59"
+            placeholder="m"
+            value={minutes}
+            onChange={(e) => setMinutes(e.target.value)}
+          />
+          <Input
+            aria-label="seconds"
+            type="number"
+            min="0"
+            max="59"
+            placeholder="s"
+            value={seconds}
+            onChange={(e) => setSeconds(e.target.value)}
+          />
+        </div>
+        {durationError && <p className="text-sm text-destructive">{durationError}</p>}
+      </div>
 
-      <label>
-        Date
-        <input type="date" required value={date} onChange={(e) => setDate(e.target.value)} />
-      </label>
+      <div className="grid gap-2">
+        <Label htmlFor="date">Date</Label>
+        <Input
+          id="date"
+          type="date"
+          required
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+      </div>
 
-      <label>
-        Start time
-        <input type="time" required value={time} onChange={(e) => setTime(e.target.value)} />
-      </label>
+      <div className="grid gap-2">
+        <Label htmlFor="time">Start time</Label>
+        <Input
+          id="time"
+          type="time"
+          required
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+        />
+      </div>
 
-      <label>
-        Type
-        <select value={type} onChange={(e) => setType(e.target.value as RunType)}>
-          {RUN_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="grid gap-2">
+        <Label htmlFor="type">Type</Label>
+        <Select value={type} onValueChange={(v) => setType(v as RunType)}>
+          <SelectTrigger id="type" className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {RUN_TYPES.map((t) => (
+              <SelectItem key={t} value={t}>
+                {t}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-      <label>
-        Notes (optional)
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
-      </label>
+      <div className="grid gap-2">
+        <Label htmlFor="notes">Notes (optional)</Label>
+        <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+      </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
-        <button type="submit" disabled={mutation.isPending}>
-          {mutation.isPending
-            ? 'Saving…'
-            : isEditing
-              ? 'Save changes'
-              : 'Add run'}
-        </button>
+      <div className="flex gap-2">
+        <Button type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? 'Saving…' : isEditing ? 'Save changes' : 'Add run'}
+        </Button>
         {isEditing && (
-          <button type="button" onClick={() => onDone?.()} disabled={mutation.isPending}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onDone?.()}
+            disabled={mutation.isPending}
+          >
             Cancel
-          </button>
+          </Button>
         )}
       </div>
 
       {mutation.isError && (
-        <p style={{ color: 'crimson' }}>Could not save: {(mutation.error as Error).message}</p>
+        <p className="text-sm text-destructive">Could not save: {(mutation.error as Error).message}</p>
       )}
     </form>
   )
