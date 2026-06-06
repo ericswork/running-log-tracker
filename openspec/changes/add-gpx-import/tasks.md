@@ -22,8 +22,8 @@
 
 ## 4. Verification
 
-- [ ] 4.1 Backend: `curl -F` upload a valid sample `.gpx` → 200 with expected `distanceKm`/`durationSec`/`date`; sanity-check distance against a known value
-- [ ] 4.2 Backend: verify 400s for missing file, non-`.gpx`, oversized, malformed, and no-track-points cases
-- [ ] 4.3 Backend: verify a no-timestamp GPX returns `distanceKm` only
-- [ ] 4.4 Frontend: upload a `.gpx` in the browser → form pre-fills → review → save creates the run via the existing flow
+- [x] 4.1 Backend: `curl -F` upload a valid sample `.gpx` → 200 with expected `distanceKm`/`durationSec`/`date`; sanity-check distance against a known value (covered by import.api.test.ts + parser haversine cross-check)
+- [x] 4.2 Backend: verify 400s for missing file, non-`.gpx`, oversized, malformed, and no-track-points cases (covered by import.api.test.ts)
+- [x] 4.3 Backend: verify a no-timestamp GPX returns `distanceKm` only (covered by import.api.test.ts)
+- [x] 4.4 Frontend: upload a `.gpx` in the browser → form pre-fills → review → save creates the run via the existing flow (confirmed by user)
 - [x] 4.5 Add backend tests for the GPX-parsing module and the import endpoint (Vitest + Supertest), consistent with the existing suite (brought forward, right after the endpoint was built)
