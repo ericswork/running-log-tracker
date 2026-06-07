@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
+import type { Prisma } from "../generated/prisma/client";
 import { prisma } from "../prisma";
-import { createRunSchema, updateRunSchema } from "./schemas";
+import { createRunSchema, updateRunSchema, listRunsQuerySchema } from "./schemas";
 import { parseBody } from "../lib/validation";
 
 const notFound = (res: Response) =>
@@ -17,9 +18,30 @@ export async function createRun(req: Request, res: Response): Promise<void> {
   res.status(201).json(run);
 }
 
-// GET /api/runs — all runs, newest first (empty array when none).
-export async function listRuns(_req: Request, res: Response): Promise<void> {
-  const runs = await prisma.run.findMany({ orderBy: { date: "desc" } });
+// GET /api/runs — runs newest first, narrowed by optional AND-combined filters
+// (whole-day date range, distance band, run types). No filters → all runs.
+export async function listRuns(req: Request, res: Response): Promise<void> {
+  const parsed = parseBody(listRunsQuerySchema, req.query);
+  if (!parsed.ok) {
+    res.status(parsed.status).json(parsed.body);
+    return;
+  }
+  const { from, to, minDistanceKm, maxDistanceKm, type } = parsed.data;
+
+  const where: Prisma.RunWhereInput = {};
+  if (from || to) {
+    where.date = {};
+    if (from) where.date.gte = new Date(`${from}T00:00:00.000Z`);
+    if (to) where.date.lte = new Date(`${to}T23:59:59.999Z`);
+  }
+  if (minDistanceKm !== undefined || maxDistanceKm !== undefined) {
+    where.distanceKm = {};
+    if (minDistanceKm !== undefined) where.distanceKm.gte = minDistanceKm;
+    if (maxDistanceKm !== undefined) where.distanceKm.lte = maxDistanceKm;
+  }
+  if (type && type.length) where.type = { in: type };
+
+  const runs = await prisma.run.findMany({ where, orderBy: { date: "desc" } });
   res.json(runs);
 }
 

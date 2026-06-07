@@ -1,9 +1,9 @@
 ## 1. Backend — filterable list endpoint
 
-- [ ] 1.1 Add `listRunsQuerySchema` to `server/src/runs/schemas.ts`: `from`/`to` (`YYYY-MM-DD`, real calendar dates), `minDistanceKm`/`maxDistanceKm` (`z.coerce.number().nonnegative()`), `type` (Zod `preprocess` → `string[]`, split on commas, each in `RUN_TYPES`); object-level refines for `from <= to` and `minDistanceKm <= maxDistanceKm`
-- [ ] 1.2 Update `listRuns` in `server/src/runs/controller.ts`: validate `req.query` via `parseBody`, build a Prisma `where` (date `gte ${from}T00:00:00.000Z` / `lte ${to}T23:59:59.999Z`, distance `gte`/`lte`, `type: { in }`), keep `orderBy: { date: "desc" }` and the `Run[]` response
-- [ ] 1.3 Add Supertest tests (`server/tests/runs.filter.api.test.ts`): whole-day date-range inclusivity (incl. a `23:59:59` boundary), distance band, multi-type via CSV and repeated params, combined-AND, no-params (unchanged), empty-result, and 400s for malformed date, non-numeric distance, unknown type, and inverted `from`/`to` + `min`/`max`
-- [ ] 1.4 Run `npm --prefix server test` — all backend tests pass
+- [x] 1.1 Add `listRunsQuerySchema` to `server/src/runs/schemas.ts`: `from`/`to` (`YYYY-MM-DD`, real calendar dates), `minDistanceKm`/`maxDistanceKm` (`z.coerce.number().nonnegative()`), `type` (Zod `preprocess` → `string[]`, split on commas, each in `RUN_TYPES`); object-level refines for `from <= to` and `minDistanceKm <= maxDistanceKm`
+- [x] 1.2 Update `listRuns` in `server/src/runs/controller.ts`: validate `req.query` via `parseBody`, build a Prisma `where` (date `gte ${from}T00:00:00.000Z` / `lte ${to}T23:59:59.999Z`, distance `gte`/`lte`, `type: { in }`), keep `orderBy: { date: "desc" }` and the `Run[]` response
+- [x] 1.3 Add Supertest tests (`server/tests/runs.filter.api.test.ts`): whole-day date-range inclusivity (incl. a `23:59:59` boundary), distance band, multi-type via CSV and repeated params, combined-AND, no-params (unchanged), empty-result, and 400s for malformed date, non-numeric distance, unknown type, and inverted `from`/`to` + `min`/`max`
+- [x] 1.4 Run `npm --prefix server test` — all backend tests pass
 
 ## 2. Frontend — data layer & Log filter bar
 
