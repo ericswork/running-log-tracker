@@ -35,9 +35,11 @@ beforeEach(() => {
 describe('RunList edit flow', () => {
   it('opens a dialog prefilled with the run and saves an update', async () => {
     renderWithClient(<RunList />)
-    await screen.findByText('Easy') // run row rendered
+    // Wait for the table row's edit control (the filter bar also renders an
+    // "Easy" chip immediately, so sync on a table-only control instead).
+    const editButton = await screen.findByRole('button', { name: /edit/i })
 
-    fireEvent.click(screen.getByRole('button', { name: /edit/i }))
+    fireEvent.click(editButton)
 
     const distance = await screen.findByLabelText('Distance (km)')
     expect(distance).toHaveValue(5) // prefilled
@@ -54,9 +56,9 @@ describe('RunList edit flow', () => {
 describe('RunList delete flow', () => {
   it('deletes the run after confirming in the alert dialog', async () => {
     renderWithClient(<RunList />)
-    await screen.findByText('Easy')
+    const deleteButton = await screen.findByRole('button', { name: /delete/i })
 
-    fireEvent.click(screen.getByRole('button', { name: /delete/i }))
+    fireEvent.click(deleteButton)
 
     const dialog = await screen.findByRole('alertdialog')
     fireEvent.click(within(dialog).getByRole('button', { name: /delete/i }))
@@ -66,9 +68,9 @@ describe('RunList delete flow', () => {
 
   it('does not delete when the confirmation is declined', async () => {
     renderWithClient(<RunList />)
-    await screen.findByText('Easy')
+    const deleteButton = await screen.findByRole('button', { name: /delete/i })
 
-    fireEvent.click(screen.getByRole('button', { name: /delete/i }))
+    fireEvent.click(deleteButton)
 
     const dialog = await screen.findByRole('alertdialog')
     fireEvent.click(within(dialog).getByRole('button', { name: /cancel/i }))

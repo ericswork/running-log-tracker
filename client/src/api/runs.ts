@@ -38,10 +38,36 @@ export interface ImportedRun {
   date?: string; // ISO 8601
 }
 
+// Optional, AND-combined filters for the run list. `type` is the explicit set of
+// run types to include; omit it (or pass all types) to include every type — the
+// none-selected case is handled in the UI, not sent to the API.
+export interface RunFilters {
+  from?: string; // YYYY-MM-DD (inclusive, whole day)
+  to?: string; // YYYY-MM-DD (inclusive, whole day)
+  minDistanceKm?: number;
+  maxDistanceKm?: number;
+  type?: RunType[];
+}
+
 // Relative path — Vite's dev proxy forwards /api to the Express server.
 const BASE = "/api/runs";
 
 const JSON_HEADERS = { "Content-Type": "application/json" } as const;
+
+function buildRunsQuery(filters?: RunFilters): string {
+  if (!filters) return "";
+  const qs = new URLSearchParams();
+  if (filters.from) qs.set("from", filters.from);
+  if (filters.to) qs.set("to", filters.to);
+  if (filters.minDistanceKm !== undefined)
+    qs.set("minDistanceKm", String(filters.minDistanceKm));
+  if (filters.maxDistanceKm !== undefined)
+    qs.set("maxDistanceKm", String(filters.maxDistanceKm));
+  if (filters.type && filters.type.length)
+    qs.set("type", filters.type.join(","));
+  const s = qs.toString();
+  return s ? `?${s}` : "";
+}
 
 async function handle<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -56,8 +82,8 @@ async function handle<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function fetchRuns(): Promise<Run[]> {
-  return handle<Run[]>(await fetch(BASE));
+export async function fetchRuns(filters?: RunFilters): Promise<Run[]> {
+  return handle<Run[]>(await fetch(`${BASE}${buildRunsQuery(filters)}`));
 }
 
 export async function fetchRun(id: string): Promise<Run> {

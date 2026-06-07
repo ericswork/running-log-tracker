@@ -2,6 +2,14 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchRuns, deleteRun, type Run } from '../api/runs'
 import { RunsTable } from '@/features/runs/RunsTable'
+import { RunFilterBar } from '@/features/runs/RunFilterBar'
+import {
+  defaultFilterState,
+  isFilterActive,
+  noTypesSelected,
+  toApiFilters,
+  type FilterState,
+} from '@/features/runs/filters'
 import { RunFormDialog } from '@/features/runs/RunFormDialog'
 import {
   AlertDialog,
@@ -17,10 +25,17 @@ import {
 export function RunList() {
   const queryClient = useQueryClient()
 
-  // The API returns runs newest-first; the table re-sorts from there.
+  // Log filter state; the run-type chips default to all selected.
+  const [filters, setFilters] = useState<FilterState>(defaultFilterState)
+  const apiFilters = toApiFilters(filters)
+  // No run types selected → empty by definition; skip the request entirely.
+  const emptyTypeSelection = noTypesSelected(filters)
+
+  // The API returns runs newest-first (already filtered); the table re-sorts.
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['runs'],
-    queryFn: fetchRuns,
+    queryKey: ['runs', apiFilters],
+    queryFn: () => fetchRuns(apiFilters),
+    enabled: !emptyTypeSelection,
   })
 
   // Only one run is edited (Dialog) or pending deletion (AlertDialog) at a time.
@@ -32,6 +47,7 @@ export function RunList() {
     // context object as a second arg to a bare mutationFn.
     mutationFn: (id: string) => deleteRun(id),
     onSuccess: () => {
+      // Prefix match invalidates every filtered ['runs', …] variant.
       queryClient.invalidateQueries({ queryKey: ['runs'] })
     },
   })
@@ -42,16 +58,37 @@ export function RunList() {
     setPendingDelete(null)
   }
 
-  if (isLoading) return <p className="text-muted-foreground">Loading runs…</p>
-  if (isError)
-    return <p className="text-destructive">Failed to load runs: {(error as Error).message}</p>
+  const runs: Run[] = emptyTypeSelection ? [] : (data ?? [])
+  const filtered = isFilterActive(filters)
+  const resultCount = emptyTypeSelection ? 0 : data?.length
 
-  const runs: Run[] = data ?? []
-  if (runs.length === 0) return <p className="text-muted-foreground">No runs yet.</p>
+  // Body below the always-visible filter bar.
+  let body
+  if (!emptyTypeSelection && isLoading) {
+    body = <p className="text-muted-foreground">Loading runs…</p>
+  } else if (!emptyTypeSelection && isError) {
+    body = (
+      <p className="text-destructive">
+        Failed to load runs: {(error as Error).message}
+      </p>
+    )
+  } else if (runs.length === 0) {
+    body = (
+      <p className="text-muted-foreground">
+        {filtered ? 'No runs match your filters.' : 'No runs yet.'}
+      </p>
+    )
+  } else {
+    body = (
+      <RunsTable runs={runs} onEdit={setEditingRun} onDelete={setPendingDelete} />
+    )
+  }
 
   return (
     <>
-      <RunsTable runs={runs} onEdit={setEditingRun} onDelete={setPendingDelete} />
+      <RunFilterBar value={filters} onChange={setFilters} resultCount={resultCount} />
+
+      {body}
 
       {/* Edit: the run-entry form, prefilled, inside the shared dialog. */}
       <RunFormDialog

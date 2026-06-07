@@ -7,11 +7,11 @@
 
 ## 2. Frontend — data layer & Log filter bar
 
-- [ ] 2.1 In `client/src/api/runs.ts`: add a `RunFilters` type and make `fetchRuns(filters?)` append a query string (`from`/`to`/`minDistanceKm`/`maxDistanceKm`/`type`)
-- [ ] 2.2 Build a shared `DateRangeControl` in `client/src/components/` — two native `<input type="date">` (emit `YYYY-MM-DD`) + a clear affordance
-- [ ] 2.3 Build the run-type multi-select as toggle chips over `RUN_TYPES` (default all-on) with explicit "Select all" + "Clear"/"None"; and the distance min/max number inputs (`step="any"`). Map selection to the API: all → omit `type`; subset → `type` in those; none → empty (client-guarded, no query)
-- [ ] 2.4 Assemble a filter bar above the table in `RunList` (stacked on mobile): holds `RunFilters` state, renders the controls + "Clear filters" (resets chips to all-on) + an active-filter / result-count indicator, and folds filters into the `['runs', filters]` query key
-- [ ] 2.5 Show a "No runs match your filters" empty state when filters are active and the result is empty — including when zero run-type chips are selected (distinct from the no-runs-at-all state)
+- [x] 2.1 In `client/src/api/runs.ts`: add a `RunFilters` type and make `fetchRuns(filters?)` append a query string (`from`/`to`/`minDistanceKm`/`maxDistanceKm`/`type`)
+- [x] 2.2 Build a shared `DateRangeControl` in `client/src/components/` — two native `<input type="date">` (emit `YYYY-MM-DD`) + a clear affordance
+- [x] 2.3 Build the run-type multi-select as toggle chips over `RUN_TYPES` (default all-on) with explicit "Select all" + "Clear"/"None"; and the distance min/max number inputs (`step="any"`). Map selection to the API: all → omit `type`; subset → `type` in those; none → empty (client-guarded, no query)
+- [x] 2.4 Assemble a filter bar above the table in `RunList` (stacked on mobile): holds `RunFilters` state, renders the controls + "Clear filters" (resets chips to all-on) + an active-filter / result-count indicator, and folds filters into the `['runs', filters]` query key
+- [x] 2.5 Show a "No runs match your filters" empty state when filters are active and the result is empty — including when zero run-type chips are selected (distinct from the no-runs-at-all state)
 
 ## 3. Frontend — Dashboard date range
 
