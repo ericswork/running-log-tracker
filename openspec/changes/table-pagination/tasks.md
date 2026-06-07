@@ -6,11 +6,11 @@
 
 ## 2. Backend — pagination + server sorting
 
-- [ ] 2.1 Extend `listRunsQuerySchema` in `server/src/runs/schemas.ts`: `limit` (`z.coerce.number().int()`, ≥1, ≤100, default 20), `offset` (`z.coerce.number().int()`, ≥0, default 0), `sort` (enum `date|distanceKm|durationSec|type`, default `date`), `order` (enum `asc|desc`, default `desc`)
-- [ ] 2.2 Update `listRuns` in `server/src/runs/controller.ts`: keep the filter `where`, add `orderBy: [{ [sort]: order }, { id: 'desc' }]` (stable tie-break), `skip: offset`, `take: limit`; compute `total` via `prisma.run.count({ where })`; return `{ runs, total, limit, offset }`
-- [ ] 2.3 Update the existing `GET /api/runs` tests (`runs.api.test.ts`, `runs.filter.api.test.ts`) for the envelope shape (read `.runs`/`.total`)
-- [ ] 2.4 Add Supertest cases: default page + envelope, a non-first page (`offset`), `limit` bound (cap), each `sort` column asc/desc, sort+filter+paginate combined, `total` reflects filters, and 400s for invalid `limit`/`offset`/`sort`/`order`
-- [ ] 2.5 Run `npm --prefix server test` — all backend tests pass
+- [x] 2.1 Extend `listRunsQuerySchema` in `server/src/runs/schemas.ts`: `limit` (`z.coerce.number().int()`, ≥1, ≤100, default 20), `offset` (`z.coerce.number().int()`, ≥0, default 0), `sort` (enum `date|distanceKm|durationSec|type`, default `date`), `order` (enum `asc|desc`, default `desc`)
+- [x] 2.2 Update `listRuns` in `server/src/runs/controller.ts`: keep the filter `where`, add `orderBy: [{ [sort]: order }, { id: 'desc' }]` (stable tie-break), `skip: offset`, `take: limit`; compute `total` via `prisma.run.count({ where })`; return `{ runs, total, limit, offset }`
+- [x] 2.3 Update the existing `GET /api/runs` tests (`runs.api.test.ts`, `runs.filter.api.test.ts`) for the envelope shape (read `.runs`/`.total`)
+- [x] 2.4 Add Supertest cases: default page + envelope, a non-first page (`offset`), `limit` bound (cap), each `sort` column asc/desc, sort+filter+paginate combined, `total` reflects filters, and 400s for invalid `limit`/`offset`/`sort`/`order`
+- [x] 2.5 Run `npm --prefix server test` — all backend tests pass
 
 ## 3. Frontend — data layer
 

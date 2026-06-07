@@ -57,6 +57,14 @@ const typeFilter = z.preprocess((val) => {
 // Optional filters for GET /api/runs, all AND-combined. from/to are whole-day
 // inclusive bounds against the raw stored timestamp (no timezone). Distances are
 // coerced from query strings. Inverted ranges are rejected.
+// Columns the list may be sorted by (the table's sortable columns).
+export const RUN_SORT_FIELDS = [
+  "date",
+  "distanceKm",
+  "durationSec",
+  "type",
+] as const;
+
 export const listRunsQuerySchema = z
   .object({
     from: ymd.optional(),
@@ -70,6 +78,20 @@ export const listRunsQuerySchema = z
       .nonnegative("maxDistanceKm must be a non-negative number")
       .optional(),
     type: typeFilter,
+    // Pagination + sorting (all defaulted). limit is capped to bound a page.
+    limit: z.coerce
+      .number()
+      .int("limit must be an integer")
+      .min(1, "limit must be at least 1")
+      .max(100, "limit must not exceed 100")
+      .default(20),
+    offset: z.coerce
+      .number()
+      .int("offset must be an integer")
+      .min(0, "offset must be non-negative")
+      .default(0),
+    sort: z.enum(RUN_SORT_FIELDS).default("date"),
+    order: z.enum(["asc", "desc"]).default("desc"),
   })
   .refine((d) => !(d.from && d.to) || d.from <= d.to, {
     message: "from must not be after to",

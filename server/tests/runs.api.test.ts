@@ -40,19 +40,20 @@ describe('POST /api/runs (create)', () => {
 })
 
 describe('GET /api/runs (list)', () => {
-  it('returns an empty array when there are no runs', async () => {
+  it('returns an empty page envelope when there are no runs', async () => {
     const res = await request(app).get('/api/runs')
     expect(res.status).toBe(200)
-    expect(res.body).toEqual([])
+    expect(res.body).toEqual({ runs: [], total: 0, limit: 20, offset: 0 })
   })
 
-  it('returns runs newest-first', async () => {
+  it('returns runs newest-first inside the envelope', async () => {
     await request(app).post('/api/runs').send({ ...validRun, date: '2026-05-30T06:00:00.000Z' })
     await request(app).post('/api/runs').send({ ...validRun, date: '2026-06-06T06:00:00.000Z' })
     await request(app).post('/api/runs').send({ ...validRun, date: '2026-06-01T06:00:00.000Z' })
     const res = await request(app).get('/api/runs')
     expect(res.status).toBe(200)
-    const dates = res.body.map((r: { date: string }) => r.date.slice(0, 10))
+    expect(res.body.total).toBe(3)
+    const dates = res.body.runs.map((r: { date: string }) => r.date.slice(0, 10))
     expect(dates).toEqual(['2026-06-06', '2026-06-01', '2026-05-30'])
   })
 })
@@ -133,6 +134,7 @@ describe('validation (400, not persisted)', () => {
   it('does not persist rejected runs', async () => {
     await request(app).post('/api/runs').send({ ...validRun, type: 'Sprint' })
     const res = await request(app).get('/api/runs')
-    expect(res.body).toEqual([])
+    expect(res.body.total).toBe(0)
+    expect(res.body.runs).toEqual([])
   })
 })

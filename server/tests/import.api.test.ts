@@ -26,7 +26,8 @@ describe('POST /api/runs/import', () => {
   it('does not persist a run', async () => {
     await request(app).post(IMPORT).attach('file', SAMPLE)
     const list = await request(app).get('/api/runs')
-    expect(list.body).toEqual([])
+    expect(list.body.runs).toEqual([])
+    expect(list.body.total).toBe(0)
   })
 
   it('returns 400 when no file is provided', async () => {

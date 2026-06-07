@@ -18,15 +18,17 @@ export async function createRun(req: Request, res: Response): Promise<void> {
   res.status(201).json(run);
 }
 
-// GET /api/runs — runs newest first, narrowed by optional AND-combined filters
-// (whole-day date range, distance band, run types). No filters → all runs.
+// GET /api/runs — a page of runs, sorted and narrowed by optional AND-combined
+// filters (whole-day date range, distance band, run types). Returns the envelope
+// { runs, total, limit, offset } where total counts the full filtered set.
 export async function listRuns(req: Request, res: Response): Promise<void> {
   const parsed = parseBody(listRunsQuerySchema, req.query);
   if (!parsed.ok) {
     res.status(parsed.status).json(parsed.body);
     return;
   }
-  const { from, to, minDistanceKm, maxDistanceKm, type } = parsed.data;
+  const { from, to, minDistanceKm, maxDistanceKm, type, limit, offset, sort, order } =
+    parsed.data;
 
   const where: Prisma.RunWhereInput = {};
   if (from || to) {
@@ -41,8 +43,18 @@ export async function listRuns(req: Request, res: Response): Promise<void> {
   }
   if (type && type.length) where.type = { in: type };
 
-  const runs = await prisma.run.findMany({ where, orderBy: { date: "desc" } });
-  res.json(runs);
+  // Secondary id tie-break keeps paging stable across rows with equal sort keys.
+  const orderBy: Prisma.RunOrderByWithRelationInput[] = [
+    { [sort]: order } as Prisma.RunOrderByWithRelationInput,
+    { id: "desc" },
+  ];
+
+  const [runs, total] = await Promise.all([
+    prisma.run.findMany({ where, orderBy, skip: offset, take: limit }),
+    prisma.run.count({ where }),
+  ]);
+
+  res.json({ runs, total, limit, offset });
 }
 
 // GET /api/runs/:id — the run, or 404.

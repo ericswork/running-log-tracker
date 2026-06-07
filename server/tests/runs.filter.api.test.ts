@@ -25,8 +25,8 @@ const RUNS: SeedRun[] = [
   { distanceKm: 3, durationSec: 900, date: '2026-06-08T00:00:00.000Z', type: 'Recovery' },
 ]
 
-const distances = (body: { distanceKm: number }[]) =>
-  body.map((r) => r.distanceKm)
+const distances = (body: { runs: { distanceKm: number }[] }) =>
+  body.runs.map((r) => r.distanceKm)
 
 beforeEach(async () => {
   await seed(RUNS)
@@ -75,10 +75,11 @@ describe('GET /api/runs filtering', () => {
     expect(distances(res.body)).toEqual([8])
   })
 
-  it('returns an empty array when nothing matches', async () => {
+  it('returns an empty page when nothing matches', async () => {
     const res = await request(app).get('/api/runs').query({ minDistanceKm: 100 })
     expect(res.status).toBe(200)
-    expect(res.body).toEqual([])
+    expect(res.body.runs).toEqual([])
+    expect(res.body.total).toBe(0)
   })
 })
 
