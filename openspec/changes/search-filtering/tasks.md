@@ -26,5 +26,5 @@
 
 ## 5. Wrap-up
 
-- [ ] 5.1 Update `CLAUDE.md` (API filter params on `GET /api/runs`, `run-search` capability, shared `DateRangeControl`, status/continuity + totals)
-- [ ] 5.2 Confirm change ready for `/opsx:archive` (tag target `v0.4.0`)
+- [x] 5.1 Update `CLAUDE.md` (API filter params on `GET /api/runs`, `run-search` capability, shared `DateRangeControl`, status/continuity + totals)
+- [x] 5.2 Confirm change ready for `/opsx:archive` (tag target `v0.4.0`)

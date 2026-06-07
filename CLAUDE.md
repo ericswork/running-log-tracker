@@ -23,12 +23,13 @@ Monorepo, two independently-run apps + shared specs:
 - **UI foundation** (`phase-3a-ui-foundation`) — adopted **shadcn/ui + Tailwind v4**; app shell + header + **light/dark theming** (persisted); run list → **sortable data table** (TanStack Table); edit/delete moved into shadcn **Dialog**/**AlertDialog** (replacing `window.confirm`); first **frontend test harness** (Vitest + RTL + jsdom). → tag `v0.3.0`
 - **Responsive layout** (`phase-3a1-responsive-layout`) — two-column desktop (form left / table right, table wider) and single-column mobile with an **"Add run" overlay**; shared **`RunFormDialog`** powers add + edit. → tag `v0.3.0`
 - **Dashboard & analytics** (`phase-3b-dashboard-analytics`) — read-only `/api/stats` aggregation endpoints (weekly mileage, pace trend, run-type breakdown, summary) bucketed in the **user's timezone** (IANA or UTC offset; Zod-validated); **Recharts** dashboard (summary cards + bar/line/donut, "hide empty weeks" toggle) behind a **Log/Dashboard Tabs** switch in the shell. First backend work since Phase 1. → tag `v0.3.1`
+- **Search & filtering** (`search-filtering`) — `GET /api/runs` gains optional Zod-validated filter query params (whole-day `from`/`to` date range, `minDistanceKm`/`maxDistanceKm`, multi `type`), AND-combined; **Log filter bar** (date range, distance, run-type chips with Select all/Clear) + a **Dashboard date-range picker** (reusing the existing `/api/stats` `from`/`to`) via a shared `DateRangeControl`. → tag `v0.4.0`
 
-Current totals: **72 backend tests** + **34 frontend tests** passing; living specs `run-management` (13 reqs), `gpx-import` (5), `app-shell` (3), `frontend-testing` (2), `run-analytics` (7). Milestones tagged via GitHub Desktop (latest **v0.3.1**).
+Current totals: **84 backend tests** + **47 frontend tests** passing; living specs `run-management` (13 reqs), `gpx-import` (5), `app-shell` (3), `frontend-testing` (2), `run-analytics` (7), `run-search` (2). Milestones tagged via GitHub Desktop (latest **v0.4.0**).
 
-**Next up:** Phase 4.
+**Next up:** `table-pagination` (deferred from search & filtering).
 
-**Phase 4 (later):** search & filtering — flexible query params on `GET /api/runs` (date range, distance, run type) + filter UI.
+**`table-pagination` (next):** server-side pagination of `GET /api/runs` — `limit`/`offset` (or cursor) + total count, which changes the list response to an envelope and pushes **sorting server-side** (the table sorts client-side today). Its own change; not urgent at single-user scale.
 
 ## Commands
 
@@ -62,6 +63,7 @@ Dev server has HMR (frontend) and `tsx watch` (backend) — source edits are liv
 - **Analytics endpoints (Phase 3B)**: read-only `/api/stats/*`, **derived from existing runs — no schema/persistence**. Same layering + `parseBody`/Zod as runs. Aggregation is **pure JS over all runs** (fine at single-user scale) in `server/src/stats/buckets.ts` (framework-free, unit-tested independently of HTTP); the controller just validates query params, `findMany`s, and wraps results. Canonical units only — **no pace/formatting server-side**.
 - **Timezone bucketing**: `server/src/stats/buckets.ts` resolves the `timezone` query param (IANA via `Intl.DateTimeFormat` try/catch, or a fixed `±HH:MM`/`±HHMM`/`Z` offset shim; absent/empty → UTC) to a run's **local** calendar date, so near-midnight runs land on the correct local day. Weeks are **Monday-start (ISO-8601)**, keyed by the local `weekStart` date. Weekly/pace series are **zero-filled** across the span (`from`/`to` when both given, else first→last week with runs); the "hide empty weeks" UI toggle filters those out **client-side** (no refetch). Pace is undefined for zero-distance weeks → the client renders a **gap** (null point, `connectNulls={false}`), never a 0 pace.
 - **Dashboard (Phase 3B)**: `features/dashboard/` — React Query hooks (`hooks.ts`) hitting `/api/stats` with the **browser timezone** attached; pure `shape.ts`/`format.ts` (unit-tested) turn endpoint data + derive pace/labels for **Recharts** (`ResponsiveContainer`-wrapped bar/line/donut). Charts show a "No runs yet" `EmptyState` when their data is empty. A shadcn **Tabs** (`Log` default / `Dashboard`) in `App.tsx` switches views — **no router**; the Log tab holds the existing form+table grid unchanged.
+- **Filtering (search-filtering)**: `GET /api/runs` accepts optional AND-combined filters validated by `listRunsQuerySchema` (`runs/schemas.ts`): whole-day `from`/`to` (raw-timestamp UTC bounds, **no timezone** — distinct from the stats endpoints' tz bucketing), `minDistanceKm`/`maxDistanceKm` (`z.coerce.number`), and `type` (repeat-or-CSV → `string[]` of `RUN_TYPES`). Controller builds a `Prisma.RunWhereInput`; response stays a newest-first `Run[]`. **Absent `type` = all types** (no "match none" server-side). Frontend: `features/runs/filters.ts` (pure `FilterState` → `toApiFilters`, unit-tested) + `RunFilterBar` (date range, distance, `RunTypeChips`); `RunList` keys the query on `['runs', apiFilters]` (mutations still invalidate the `['runs']` prefix). **Run-type chips default all-on, explicit Select all/Clear**; the **none-selected case is client-guarded** (query disabled, shows "No runs match your filters") so the API never needs an empty-set param. Shared `components/DateRangeControl` (native date inputs) is reused by the Log filter bar and the Dashboard date-range picker (which drives the existing stats `from`/`to`).
 
 ## Layout (key files)
 
@@ -79,22 +81,23 @@ server/tests/{runs.api,import.api,stats.api}.test.ts + fixtures/*.gpx
 server/src/**/*.test.ts   # unit tests co-located (e.g. stats/buckets.test.ts)
 client/src/
   main.tsx, App.tsx              # App = ThemeProvider > AppShell > Tabs(Log: form+RunList | Dashboard)
-  api/{runs.ts, stats.ts}        # runs CRUD + importGpx ; stats fetchers (browser tz attached)
+  api/{runs.ts, stats.ts}        # runs CRUD + importGpx + RunFilters ; stats fetchers (browser tz attached)
   index.css                      # Tailwind import + shadcn theme tokens (incl. --chart-1..5)
   lib/utils.ts                   # cn()
   components/ui/                 # shadcn primitives (button, table, dialog, alert-dialog, dropdown-menu, input, label, select, textarea, card, checkbox, tabs)
+  components/DateRangeControl.tsx   # shared from/to native-date control (Log filter bar + Dashboard)
   components/layout/             # AppShell, ThemeProvider, ThemeToggle (+ .test)
-  components/{RunForm,RunList}.tsx  # RunForm (create/edit) ; RunList (table container + edit/delete dialogs)
-  features/runs/                 # RunsTable, RunFormDialog (+ .test)
+  components/{RunForm,RunList}.tsx  # RunForm (create/edit) ; RunList (filter bar + table container + edit/delete dialogs)
+  features/runs/                 # RunsTable, RunFormDialog, RunFilterBar, RunTypeChips, filters.ts (+ .test)
   features/dashboard/            # Dashboard, SummaryCards, {WeeklyMileage,PaceTrend,TypeBreakdown}Chart, ChartCard, EmptyState; hooks.ts, shape.ts, format.ts (+ .test)
   test/                          # setup.ts (jsdom mocks: matchMedia, ResizeObserver, localStorage), renderWithClient.tsx
 client/{vite.config.ts (/api proxy + tailwind + @ alias), vitest.config.ts, components.json}
-openspec/specs/{run-management,gpx-import,app-shell,frontend-testing,run-analytics}/spec.md
+openspec/specs/{run-management,gpx-import,app-shell,frontend-testing,run-analytics,run-search}/spec.md
 ```
 
 ## API
 
-`GET /api/health` · `GET /api/runs` (newest first) · `POST /api/runs` · `GET /api/runs/:id` · `PATCH /api/runs/:id` · `DELETE /api/runs/:id` · `POST /api/runs/import` (multipart `.gpx`, parse-only).
+`GET /api/health` · `GET /api/runs` (newest first; optional filters `from`/`to`=`YYYY-MM-DD` whole-day, `minDistanceKm`/`maxDistanceKm`, `type`=repeat-or-CSV of `RUN_TYPES` — AND-combined, invalid/inverted → 400) · `POST /api/runs` · `GET /api/runs/:id` · `PATCH /api/runs/:id` · `DELETE /api/runs/:id` · `POST /api/runs/import` (multipart `.gpx`, parse-only).
 
 **Analytics** (read-only, derived from runs; optional `from`/`to` = `YYYY-MM-DD` + `timezone` = IANA name or UTC offset; invalid → 400):
 `GET /api/stats/summary` → `{totalRuns,totalDistanceKm,totalDurationSec}` · `GET /api/stats/weekly` → `{weeks:[{weekStart,distanceKm,runCount}]}` · `GET /api/stats/pace` → `{periods:[{weekStart,distanceKm,durationSec}]}` · `GET /api/stats/by-type` → `{types:[{type,count,distanceKm}]}`.
