@@ -5,9 +5,9 @@
 
 ## 2. Pager component
 
-- [ ] 2.1 Add presentational `features/runs/Pager.tsx` taking `currentPage`, `pageCount`, and `onPageChange(page)`; render a `justify-between` three-section bar — left "Page X of Y" readout, center windowed numbered buttons (via `pageRange`) with the ellipsis as a non-interactive marker, right Previous/Next — using shadcn `Button`s
-- [ ] 2.2 Disable Previous on the first page and Next on the last page; render the current page button as marked and non-interactive; rely on the always-shown first/last numbered buttons for jump-to-first/last (no dedicated controls)
-- [ ] 2.3 Add `features/runs/Pager.test.tsx` (Vitest + RTL): renders the readout + expected buttons for a multi-page count, calls `onPageChange` with the right page for a numbered (incl. first/last) and prev/next click, disables Previous/Next at the bounds, and shows the ellipsis for large counts
+- [x] 2.1 Add presentational `features/runs/Pager.tsx` taking `currentPage`, `pageCount`, and `onPageChange(page)`; render a `justify-between` three-section bar — left "Page X of Y" readout, center windowed numbered buttons (via `pageRange`) with the ellipsis as a non-interactive marker, right Previous/Next — using shadcn `Button`s
+- [x] 2.2 Disable Previous on the first page and Next on the last page; render the current page button as marked and non-interactive; rely on the always-shown first/last numbered buttons for jump-to-first/last (no dedicated controls)
+- [x] 2.3 Add `features/runs/Pager.test.tsx` (Vitest + RTL): renders the readout + expected buttons for a multi-page count, calls `onPageChange` with the right page for a numbered (incl. first/last) and prev/next click, disables Previous/Next at the bounds, and shows the ellipsis for large counts
 
 ## 3. RunList wiring
 
