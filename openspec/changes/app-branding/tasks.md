@@ -9,8 +9,8 @@
 
 ## 3. Favicon & document title
 
-- [ ] 3.1 Replace `client/public/favicon.svg` with a self-contained `Footprints` SVG using an explicit brand color (so it reads on any tab background)
-- [ ] 3.2 Set `<title>` to "Running Log" in `client/index.html` (keep the existing `<link rel="icon" type="image/svg+xml" href="/favicon.svg">`)
+- [x] 3.1 Replace `client/public/favicon.svg` with a self-contained `Footprints` SVG using an explicit brand color (so it reads on any tab background)
+- [x] 3.2 Set `<title>` to "Running Log" in `client/index.html` (keep the existing `<link rel="icon" type="image/svg+xml" href="/favicon.svg">`)
 
 ## 4. Test & verify
 
