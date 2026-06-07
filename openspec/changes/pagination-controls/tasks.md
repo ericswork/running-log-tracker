@@ -11,13 +11,13 @@
 
 ## 3. RunList wiring
 
-- [ ] 3.1 Change `PAGE_SIZE` from 20 to 10 in `client/src/components/RunList.tsx`
-- [ ] 3.2 Replace the inline previous/next pager JSX (including its "Page X of Y" readout, now owned by `Pager`) with `<Pager currentPage={currentPage} pageCount={pageCount} onPageChange={…} />`, converting page → offset as `(page - 1) * PAGE_SIZE` in the handler; keep the `total > PAGE_SIZE` visibility guard
-- [ ] 3.3 In `deleteMutation.onSuccess`, after invalidating `['runs']`, clamp the offset to the new last page: `maxOffset = Math.max(0, (Math.ceil((total - 1) / PAGE_SIZE) - 1) * PAGE_SIZE)`, and `setOffset(maxOffset)` when `offset > maxOffset` (single refetch, no `useEffect`)
+- [x] 3.1 Change `PAGE_SIZE` from 20 to 10 in `client/src/components/RunList.tsx`
+- [x] 3.2 Replace the inline previous/next pager JSX (including its "Page X of Y" readout, now owned by `Pager`) with `<Pager currentPage={currentPage} pageCount={pageCount} onPageChange={…} />`, converting page → offset as `(page - 1) * PAGE_SIZE` in the handler; keep the `total > PAGE_SIZE` visibility guard
+- [x] 3.3 In `deleteMutation.onSuccess`, after invalidating `['runs']`, clamp the offset to the new last page: `maxOffset = Math.max(0, (Math.ceil((total - 1) / PAGE_SIZE) - 1) * PAGE_SIZE)`, and `setOffset(maxOffset)` when `offset > maxOffset` (single refetch, no `useEffect`)
 
 ## 4. Tests & verification
 
 - [ ] 4.1 Update existing `RunList`/`RunsTable` tests that assume a page size of 20 (totals, page counts, labels) to the new size of 10
 - [ ] 4.2 Add a `RunList` test for clamp-on-delete: deleting the only run on the last page (not the first page) moves the view to the previous page
 - [ ] 4.3 Run `npm --prefix client test` (all frontend tests green) and `tsc --noEmit -p tsconfig.app.json` (no type errors)
-- [ ] 4.4 Manually verify in the running app: page size 10, numbered/first/last/prev/next navigation, ellipsis windowing on a large set, and clamp-on-delete (Recharts/responsive caveats aside)
+- [ ] 4.4 Manually verify in the running app: page size 10, numbered/first/last/prev/next navigation, ellipsis windowing on a large set, clamp-on-delete, and the mobile pager (numbered row hidden below `sm`, readout not wrapping, Previous/Next still usable, and the compact pager also showing above the table on mobile only)

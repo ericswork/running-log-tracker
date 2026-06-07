@@ -19,7 +19,7 @@ import {
   type FilterState,
 } from '@/features/runs/filters'
 import { RunFormDialog } from '@/features/runs/RunFormDialog'
-import { Button } from '@/components/ui/button'
+import { Pager } from '@/features/runs/Pager'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 10
 
 export function RunList() {
   const queryClient = useQueryClient()
@@ -87,6 +87,16 @@ export function RunList() {
     onSuccess: () => {
       // Prefix match invalidates every filtered ['runs', …] variant.
       queryClient.invalidateQueries({ queryKey: ['runs'] })
+      // The delete drops the total by one; if that empties the current page
+      // (e.g. the last run on the last page), clamp back to the last non-empty
+      // page so the refetch lands on real rows, not a blank table. Done here —
+      // not a useEffect — so the offset change batches with the invalidation
+      // into a single refetch.
+      const maxOffset = Math.max(
+        0,
+        (Math.ceil((total - 1) / PAGE_SIZE) - 1) * PAGE_SIZE,
+      )
+      if (offset > maxOffset) setOffset(maxOffset)
     },
   })
 
@@ -102,8 +112,10 @@ export function RunList() {
 
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const currentPage = Math.floor(offset / PAGE_SIZE) + 1
-  const canPrev = offset > 0
-  const canNext = offset + PAGE_SIZE < total
+  const handlePageChange = (page: number) => setOffset((page - 1) * PAGE_SIZE)
+  // Pagination is only meaningful when the filtered set spans multiple pages.
+  const showPager =
+    !emptyTypeSelection && !isLoading && !isError && total > PAGE_SIZE
 
   // Body below the always-visible filter bar.
   let body
@@ -141,32 +153,29 @@ export function RunList() {
         resultCount={emptyTypeSelection ? 0 : data?.total}
       />
 
+      {/* Mobile only: a compact pager above the table as well, so paging doesn't
+          require scrolling past the whole list. Numbers stay hidden below sm
+          (see Pager), leaving the readout + Previous/Next. */}
+      {showPager && (
+        <div className="mb-3 sm:hidden">
+          <Pager
+            currentPage={currentPage}
+            pageCount={pageCount}
+            onPageChange={handlePageChange}
+            label="Run pages (top)"
+          />
+        </div>
+      )}
+
       {body}
 
-      {/* Pagination: only meaningful when the filtered set spans multiple pages. */}
-      {!emptyTypeSelection && !isLoading && !isError && total > PAGE_SIZE && (
-        <div className="mt-4 flex items-center justify-between gap-2">
-          <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {pageCount}
-          </span>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!canPrev}
-              onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!canNext}
-              onClick={() => setOffset((o) => o + PAGE_SIZE)}
-            >
-              Next
-            </Button>
-          </div>
+      {showPager && (
+        <div className="mt-4">
+          <Pager
+            currentPage={currentPage}
+            pageCount={pageCount}
+            onPageChange={handlePageChange}
+          />
         </div>
       )}
 

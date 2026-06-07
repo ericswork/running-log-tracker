@@ -1,29 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { pageRange } from "./pageRange";
 
-// Presentational pager for the run list, rendered below the table as a single
-// three-section bar: "Page X of Y" readout (left), windowed numbered buttons
-// (center), and Previous/Next (right). The caller owns the offset and converts
-// the page passed to onPageChange back into an offset. The first/last numbered
-// buttons are always shown, so they double as jump-to-first / jump-to-last.
+// Presentational pager for the run list — a three-section bar: "Page X of Y"
+// readout (left), windowed numbered buttons (center, hidden on mobile), and
+// Previous/Next (right). The caller owns the offset and converts the page passed
+// to onPageChange back into an offset. The first/last numbered buttons are always
+// shown, so they double as jump-to-first / jump-to-last. Rendered as a labeled
+// nav landmark; `label` distinguishes multiple pagers (e.g. the mobile top bar).
 export function Pager({
   currentPage,
   pageCount,
   onPageChange,
+  label = "Run pages",
 }: {
   currentPage: number;
   pageCount: number;
   onPageChange: (page: number) => void;
+  label?: string;
 }) {
   const tokens = pageRange(currentPage, pageCount);
 
   return (
-    <div className="mt-4 flex items-center justify-between gap-2">
-      <span className="text-sm text-muted-foreground">
+    <nav
+      aria-label={label}
+      className="flex items-center justify-between gap-2"
+    >
+      <span className="text-sm whitespace-nowrap text-muted-foreground">
         Page {currentPage} of {pageCount}
       </span>
 
-      <div className="flex items-center gap-1">
+      {/* Numbered jump is a wider-screen affordance; on mobile the readout plus
+          Previous/Next carry navigation (the number row would crowd the bar). */}
+      <div className="hidden items-center gap-1 sm:flex">
         {tokens.map((token, i) =>
           token === "ellipsis" ? (
             <span
@@ -79,6 +87,6 @@ export function Pager({
           Next
         </Button>
       </div>
-    </div>
+    </nav>
   );
 }
