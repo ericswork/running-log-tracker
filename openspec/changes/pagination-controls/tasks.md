@@ -17,7 +17,7 @@
 
 ## 4. Tests & verification
 
-- [ ] 4.1 Update existing `RunList`/`RunsTable` tests that assume a page size of 20 (totals, page counts, labels) to the new size of 10
-- [ ] 4.2 Add a `RunList` test for clamp-on-delete: deleting the only run on the last page (not the first page) moves the view to the previous page
-- [ ] 4.3 Run `npm --prefix client test` (all frontend tests green) and `tsc --noEmit -p tsconfig.app.json` (no type errors)
+- [x] 4.1 Update existing `RunList`/`RunsTable` tests that assume a page size of 20 (totals, page counts, labels) to the new size of 10
+- [x] 4.2 Add a `RunList` test for clamp-on-delete: deleting the only run on the last page (not the first page) moves the view to the previous page
+- [x] 4.3 Run `npm --prefix client test` (all frontend tests green) and `tsc --noEmit -p tsconfig.app.json` (no type errors)
 - [ ] 4.4 Manually verify in the running app: page size 10, numbered/first/last/prev/next navigation, ellipsis windowing on a large set, clamp-on-delete, and the mobile pager (numbered row hidden below `sm`, readout not wrapping, Previous/Next still usable, and the compact pager also showing above the table on mobile only)
