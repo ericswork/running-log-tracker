@@ -15,7 +15,7 @@
 
 ## 3. Frontend — Dashboard date range
 
-- [ ] 3.1 Add the shared `DateRangeControl` to `features/dashboard/Dashboard.tsx`: hold an independent `{from?, to?}`, pass it to `useSummary`/`useWeekly`/`usePaceTrend`/`useTypeBreakdown`, and reset to all-time on clear
+- [x] 3.1 Add the shared `DateRangeControl` to `features/dashboard/Dashboard.tsx`: hold an independent `{from?, to?}`, pass it to `useSummary`/`useWeekly`/`usePaceTrend`/`useTypeBreakdown`, and reset to all-time on clear
 
 ## 4. Frontend — tests & verification
 
