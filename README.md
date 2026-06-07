@@ -6,10 +6,10 @@ A full-stack web app for logging runs and tracking training. Record runs by hand
 
 - **Run logging** — record a run's distance, duration, start date & time, type (Easy, Recovery, Tempo, Interval, Long Run, Race), and optional notes.
 - **GPX import** — upload a `.gpx` file (from a watch, Strava, etc.) and the entry form auto-fills distance, duration, and start time from the track; you review and save.
-- **Run history table** — browse logged runs in a sortable data table (by date, distance, duration, or type), with inline **edit** and **delete** (confirmation-guarded).
+- **Run history table** — browse logged runs in a data table with inline **edit** and **delete** (confirmation-guarded), **server-side sorting** (by date, distance, duration, or type) and **pagination** (Prev/Next with a page indicator).
 - **Search & filtering** — narrow the list by date range, distance band, and run type (multi-select), all server-side; clear filters in one click.
 - **Analytics dashboard** — summary cards (total runs, distance, time, average pace) plus charts for weekly mileage, pace trend, and run-type breakdown, with a date-range picker to scope the window. Time-based stats bucket in your local timezone.
-- **Polished UI** — shadcn/ui + Tailwind, light/dark theming (persisted), and a responsive layout with a Log / Dashboard tab switch.
+- **Polished UI** — shadcn/ui + Tailwind with a green/teal brand accent and a logo mark, light/dark theming (persisted), and a responsive layout with a Log / Dashboard tab switch.
 - **REST API** — full create/read/update/delete for runs plus read-only analytics endpoints, with schema validation and structured error responses.
 
 ## Tech stack
@@ -89,7 +89,7 @@ Base path: `/api`
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/health` | Health check |
-| `GET` | `/api/runs` | List runs (newest first); optional filters (see below) |
+| `GET` | `/api/runs` | List runs — **paginated, sorted, filtered** (see below) |
 | `POST` | `/api/runs` | Create a run |
 | `GET` | `/api/runs/:id` | Get a run by id |
 | `PATCH` | `/api/runs/:id` | Update a run (partial) |
@@ -100,7 +100,18 @@ Base path: `/api`
 | `GET` | `/api/stats/pace` | Distance + duration per week (client derives pace) |
 | `GET` | `/api/stats/by-type` | Count + distance per run type |
 
-**Filtering `GET /api/runs`** — all optional and AND-combined: `from`/`to` (`YYYY-MM-DD`, whole-day inclusive), `minDistanceKm`/`maxDistanceKm`, and `type` (one of the run types, repeatable or comma-separated). Invalid or inverted ranges return `400`.
+**`GET /api/runs` response** — a paginated envelope (not a bare array):
+
+```json
+{ "runs": [ /* one page of runs */ ], "total": 55, "limit": 20, "offset": 0 }
+```
+
+`total` is the count of the full filtered set (used for "Page X of Y").
+
+**`GET /api/runs` query params** — all optional, AND-combined; invalid or inverted values return `400`:
+- **Filter:** `from`/`to` (`YYYY-MM-DD`, whole-day inclusive), `minDistanceKm`/`maxDistanceKm`, `type` (one of the run types, repeatable or comma-separated).
+- **Paginate:** `limit` (1–100, default 20), `offset` (default 0).
+- **Sort:** `sort` (`date` \| `distanceKm` \| `durationSec` \| `type`, default `date`), `order` (`asc` \| `desc`, default `desc`).
 
 **Stats query params** — all optional: `from`/`to` (`YYYY-MM-DD`) and `timezone` (IANA name or UTC offset, for week bucketing; defaults to UTC). Endpoints return canonical units; pace and formatting are computed on the client.
 
@@ -139,10 +150,10 @@ The current capability specs live in [`openspec/specs/`](openspec/specs/).
 
 ## Roadmap
 
-Shipped so far: run CRUD, GPX import, edit/delete UI, shadcn/Tailwind UI with light/dark theming, sortable run table, responsive layout, the analytics dashboard, and search & filtering.
+Shipped so far: run CRUD, GPX import, edit/delete UI, shadcn/Tailwind UI with light/dark theming and brand styling, sortable run table, responsive layout, the analytics dashboard, search & filtering, and server-side pagination.
 
 Planned next:
 
-- **Table pagination** — server-side paging of the run list (also moves sorting server-side)
+- **Pagination controls** — selectable page size and jump-to-a-specific-page
 - Saved/named filters and shareable filtered views
 - Notes full-text search
