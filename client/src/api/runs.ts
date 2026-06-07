@@ -49,22 +49,46 @@ export interface RunFilters {
   type?: RunType[];
 }
 
+// Columns the list may be sorted by (server-side).
+export type RunSortField = "date" | "distanceKm" | "durationSec" | "type";
+export type SortOrder = "asc" | "desc";
+
+// Filters plus optional pagination + sort. Omitted pagination/sort fall back to
+// the server defaults (limit 20, offset 0, date desc).
+export interface RunListParams extends RunFilters {
+  limit?: number;
+  offset?: number;
+  sort?: RunSortField;
+  order?: SortOrder;
+}
+
+// The paginated list response. `total` is the count of the full filtered set.
+export interface RunsPage {
+  runs: Run[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 // Relative path — Vite's dev proxy forwards /api to the Express server.
 const BASE = "/api/runs";
 
 const JSON_HEADERS = { "Content-Type": "application/json" } as const;
 
-function buildRunsQuery(filters?: RunFilters): string {
-  if (!filters) return "";
+function buildRunsQuery(params?: RunListParams): string {
+  if (!params) return "";
   const qs = new URLSearchParams();
-  if (filters.from) qs.set("from", filters.from);
-  if (filters.to) qs.set("to", filters.to);
-  if (filters.minDistanceKm !== undefined)
-    qs.set("minDistanceKm", String(filters.minDistanceKm));
-  if (filters.maxDistanceKm !== undefined)
-    qs.set("maxDistanceKm", String(filters.maxDistanceKm));
-  if (filters.type && filters.type.length)
-    qs.set("type", filters.type.join(","));
+  if (params.from) qs.set("from", params.from);
+  if (params.to) qs.set("to", params.to);
+  if (params.minDistanceKm !== undefined)
+    qs.set("minDistanceKm", String(params.minDistanceKm));
+  if (params.maxDistanceKm !== undefined)
+    qs.set("maxDistanceKm", String(params.maxDistanceKm));
+  if (params.type && params.type.length) qs.set("type", params.type.join(","));
+  if (params.limit !== undefined) qs.set("limit", String(params.limit));
+  if (params.offset !== undefined) qs.set("offset", String(params.offset));
+  if (params.sort) qs.set("sort", params.sort);
+  if (params.order) qs.set("order", params.order);
   const s = qs.toString();
   return s ? `?${s}` : "";
 }
@@ -82,8 +106,8 @@ async function handle<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function fetchRuns(filters?: RunFilters): Promise<Run[]> {
-  return handle<Run[]>(await fetch(`${BASE}${buildRunsQuery(filters)}`));
+export async function fetchRuns(params?: RunListParams): Promise<RunsPage> {
+  return handle<RunsPage>(await fetch(`${BASE}${buildRunsQuery(params)}`));
 }
 
 export async function fetchRun(id: string): Promise<Run> {

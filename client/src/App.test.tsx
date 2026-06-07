@@ -23,7 +23,7 @@ vi.mock("@/api/stats", async (importActual) => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  ;(runsApi.fetchRuns as Mock).mockResolvedValue([])
+  ;(runsApi.fetchRuns as Mock).mockResolvedValue({ runs: [], total: 0, limit: 20, offset: 0 })
   ;(statsApi.fetchSummary as Mock).mockResolvedValue({
     totalRuns: 0,
     totalDistanceKm: 0,

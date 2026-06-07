@@ -58,9 +58,9 @@ export function RunList() {
     setPendingDelete(null)
   }
 
-  const runs: Run[] = emptyTypeSelection ? [] : (data ?? [])
+  const runs: Run[] = emptyTypeSelection ? [] : (data?.runs ?? [])
   const filtered = isFilterActive(filters)
-  const resultCount = emptyTypeSelection ? 0 : data?.length
+  const resultCount = emptyTypeSelection ? 0 : data?.total
 
   // Body below the always-visible filter bar.
   let body

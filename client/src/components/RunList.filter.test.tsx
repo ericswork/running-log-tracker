@@ -29,7 +29,7 @@ const sampleRun: Run = {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  ;(api.fetchRuns as Mock).mockResolvedValue([sampleRun])
+  ;(api.fetchRuns as Mock).mockResolvedValue({ runs: [sampleRun], total: 1, limit: 20, offset: 0 })
 })
 
 // The filter params passed to the most recent fetchRuns call.

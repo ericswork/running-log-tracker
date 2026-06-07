@@ -14,8 +14,8 @@
 
 ## 3. Frontend — data layer
 
-- [ ] 3.1 In `client/src/api/runs.ts`: add `RunsPage` (`{ runs: Run[]; total: number; limit: number; offset: number }`) and pagination/sort params (`limit`/`offset`/`sort`/`order`) to `fetchRuns`; return the envelope; extend the query builder
-- [ ] 3.2 Update any direct `fetchRuns` consumers/types for the new return shape
+- [x] 3.1 In `client/src/api/runs.ts`: add `RunsPage` (`{ runs: Run[]; total: number; limit: number; offset: number }`) and pagination/sort params (`limit`/`offset`/`sort`/`order`) to `fetchRuns`; return the envelope; extend the query builder
+- [x] 3.2 Update any direct `fetchRuns` consumers/types for the new return shape
 
 ## 4. Frontend — table pagination + server sorting
 
