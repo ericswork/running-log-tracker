@@ -14,8 +14,8 @@
 
 ## 4. Test & verify
 
-- [ ] 4.1 Add/extend an RTL test asserting the header renders the "Running Log" title and the logo mark is present
-- [ ] 4.2 Run `npm --prefix client test` — all frontend tests pass
+- [x] 4.1 Add/extend an RTL test asserting the header renders the "Running Log" title and the logo mark is present
+- [x] 4.2 Run `npm --prefix client test` — all frontend tests pass
 - [ ] 4.3 Manual check in `npm run dev`: brand color across light/dark, header mark, and the favicon/title in the browser tab
 
 ## 5. Wrap-up
