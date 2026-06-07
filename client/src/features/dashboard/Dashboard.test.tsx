@@ -91,4 +91,21 @@ describe("Dashboard", () => {
       expect(checkbox).toHaveAttribute("aria-checked", "true"),
     );
   });
+
+  it("scopes the stats requests by the selected date range", async () => {
+    mockData();
+    renderWithClient(<Dashboard />);
+    await screen.findByText("18.0 km"); // loaded
+
+    fireEvent.change(screen.getByLabelText("From"), {
+      target: { value: "2026-06-01" },
+    });
+
+    await waitFor(() => {
+      const calls = (statsApi.fetchWeekly as Mock).mock.calls;
+      expect(calls[calls.length - 1][0]).toEqual(
+        expect.objectContaining({ from: "2026-06-01" }),
+      );
+    });
+  });
 });

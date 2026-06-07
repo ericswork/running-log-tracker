@@ -19,10 +19,10 @@
 
 ## 4. Frontend — tests & verification
 
-- [ ] 4.1 RTL: setting Log filters calls `fetchRuns` with the expected params / drives the `['runs', filters]` key (mock `api/runs`)
-- [ ] 4.2 RTL: "Clear filters" resets to all runs (chips back to all-on); deselecting all run-type chips shows the "No runs match your filters" empty state; "Select all" re-includes every type
-- [ ] 4.3 RTL: selecting a Dashboard date range threads `from`/`to` into the stats hooks' query keys/params (mock `api/stats`)
-- [ ] 4.4 Run `npm --prefix client test`; manually verify the filter bar + Dashboard range in `npm run dev` (responsive collapse, native date inputs)
+- [x] 4.1 RTL: setting Log filters calls `fetchRuns` with the expected params / drives the `['runs', filters]` key (mock `api/runs`)
+- [x] 4.2 RTL: "Clear filters" resets to all runs (chips back to all-on); deselecting all run-type chips shows the "No runs match your filters" empty state; "Select all" re-includes every type
+- [x] 4.3 RTL: selecting a Dashboard date range threads `from`/`to` into the stats hooks' query keys/params (mock `api/stats`)
+- [x] 4.4 Run `npm --prefix client test`; manually verify the filter bar + Dashboard range in `npm run dev` (responsive collapse, native date inputs)
 
 ## 5. Wrap-up
 
