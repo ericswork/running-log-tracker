@@ -26,8 +26,8 @@
 
 ## 5. Frontend — tests & verification
 
-- [ ] 5.1 RTL/unit: Next/Prev change `offset` and drive `fetchRuns` params; a sort header click sets `sort`/`order` and resets to the first page; the page indicator derives from `total`; empty state on `total === 0` (mock `api/runs` returning the envelope)
-- [ ] 5.2 Run `npm --prefix client test`; manually verify paging, server sorting, and reset-on-filter/sort in `npm run dev`
+- [x] 5.1 RTL/unit: Next/Prev change `offset` and drive `fetchRuns` params; a sort header click sets `sort`/`order` and resets to the first page; the page indicator derives from `total`; empty state on `total === 0` (mock `api/runs` returning the envelope)
+- [x] 5.2 Run `npm --prefix client test`; manually verify paging, server sorting, and reset-on-filter/sort in `npm run dev`
 
 ## 6. Wrap-up
 

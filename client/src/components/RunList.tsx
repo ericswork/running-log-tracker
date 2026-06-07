@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { SortingState } from '@tanstack/react-table'
+import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import {
   fetchRuns,
   deleteRun,
@@ -48,11 +48,18 @@ export function RunList() {
   const sort = (sorting[0]?.id ?? 'date') as RunSortField
   const order: SortOrder = sorting[0]?.desc ? 'desc' : 'asc'
 
-  // Reset to the first page whenever the filters or the sort change.
-  const filterSortKey = JSON.stringify([apiFilters, sort, order])
-  useEffect(() => {
+  // Changing the filters or the sort returns to the first page. Resetting the
+  // offset in the same handler keeps it atomic with the change (React batches the
+  // two updates into one render), so the list refetches once — not twice (a stale
+  // offset followed by a reset).
+  function handleFiltersChange(next: FilterState) {
+    setFilters(next)
     setOffset(0)
-  }, [filterSortKey])
+  }
+  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
+    setSorting(updater)
+    setOffset(0)
+  }
 
   const params: RunListParams = {
     ...apiFilters,
@@ -119,7 +126,7 @@ export function RunList() {
       <RunsTable
         runs={runs}
         sorting={sorting}
-        onSortingChange={setSorting}
+        onSortingChange={handleSortingChange}
         onEdit={setEditingRun}
         onDelete={setPendingDelete}
       />
@@ -130,7 +137,7 @@ export function RunList() {
     <>
       <RunFilterBar
         value={filters}
-        onChange={setFilters}
+        onChange={handleFiltersChange}
         resultCount={emptyTypeSelection ? 0 : data?.total}
       />
 
