@@ -5,7 +5,7 @@
 
 ## 2. Header logo mark
 
-- [ ] 2.1 In `components/layout/AppShell.tsx`, render the Lucide `Footprints` mark beside the "Running Log" title, sized to the title and colored `text-primary`, marked `aria-hidden` (the `<h1>` keeps the accessible name)
+- [x] 2.1 In `components/layout/AppShell.tsx`, render the Lucide `Footprints` mark beside the "Running Log" title, sized to the title and colored `text-primary`, marked `aria-hidden` (the `<h1>` keeps the accessible name)
 
 ## 3. Favicon & document title
 
