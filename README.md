@@ -1,22 +1,26 @@
 # Running Log & Training Dashboard
 
-A full-stack web app for logging runs and tracking training. Record runs by hand or by uploading a GPS track, then review your history — with mileage, pace, and run-type insights as the dashboard grows. Built with React + TypeScript on the frontend and Express + Prisma on the backend, and developed spec-driven with [OpenSpec](https://github.com/Fission-AI/OpenSpec).
+A full-stack web app for logging runs and tracking training. Record runs by hand or by uploading a GPS track, browse and filter your history in a sortable table, and review mileage, pace, and run-type trends on a charts dashboard. Built with React + TypeScript on the frontend and Express + Prisma on the backend, and developed spec-driven with [OpenSpec](https://github.com/Fission-AI/OpenSpec).
 
 ## Features
 
 - **Run logging** — record a run's distance, duration, start date & time, type (Easy, Recovery, Tempo, Interval, Long Run, Race), and optional notes.
 - **GPX import** — upload a `.gpx` file (from a watch, Strava, etc.) and the entry form auto-fills distance, duration, and start time from the track; you review and save.
-- **REST API** — full create/read/update/delete for runs, with schema validation and structured error responses.
-- **Run history** — browse logged runs, newest first.
+- **Run history table** — browse logged runs in a sortable data table (by date, distance, duration, or type), with inline **edit** and **delete** (confirmation-guarded).
+- **Search & filtering** — narrow the list by date range, distance band, and run type (multi-select), all server-side; clear filters in one click.
+- **Analytics dashboard** — summary cards (total runs, distance, time, average pace) plus charts for weekly mileage, pace trend, and run-type breakdown, with a date-range picker to scope the window. Time-based stats bucket in your local timezone.
+- **Polished UI** — shadcn/ui + Tailwind, light/dark theming (persisted), and a responsive layout with a Log / Dashboard tab switch.
+- **REST API** — full create/read/update/delete for runs plus read-only analytics endpoints, with schema validation and structured error responses.
 
 ## Tech stack
 
 | | |
 |---|---|
 | **Frontend** | Vite, React 19, TypeScript, TanStack React Query |
+| **UI** | shadcn/ui + Tailwind CSS v4, TanStack Table (run table), Recharts (dashboard charts) |
 | **Backend** | Express 5, TypeScript (run via `tsx`), Prisma 7 + SQLite (better-sqlite3 driver adapter), Zod |
 | **Uploads / parsing** | Multer (in-memory), `@we-gold/gpxjs` |
-| **Testing** | Vitest + Supertest (backend) |
+| **Testing** | Vitest + Supertest (backend); Vitest + React Testing Library + jsdom (frontend) |
 | **Tooling** | OpenSpec (spec-driven workflow), `concurrently` (root dev launcher) |
 
 ## Architecture
@@ -25,10 +29,11 @@ A monorepo with two independently-run apps and a shared spec directory:
 
 ```
 running-log-tracker/
-├── client/      # Vite + React + TypeScript app (form, run list, typed API client)
+├── client/      # Vite + React + TypeScript app
+│   └── src/         # Log/Dashboard tabs, run form + filterable table, charts dashboard, typed API client
 ├── server/      # Express + TypeScript API
 │   ├── prisma/      # schema + migrations (SQLite)
-│   └── src/         # app + routes/controllers, validation, GPX parsing, Prisma client
+│   └── src/         # app + routes/controllers (runs, stats), validation, GPX parsing, Prisma client
 ├── openspec/    # living specs + change history (spec-driven development)
 └── package.json # root dev launcher (runs client + server together)
 ```
@@ -72,8 +77,9 @@ One `Ctrl-C` stops both; logs are labeled `[server]` / `[client]`.
 ### Test
 
 ```bash
-npm --prefix server test        # run the backend test suite
+npm --prefix server test        # backend test suite (Vitest + Supertest)
 npm --prefix server run test:watch
+npm --prefix client test        # frontend test suite (Vitest + React Testing Library)
 ```
 
 ## API
@@ -83,12 +89,20 @@ Base path: `/api`
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/health` | Health check |
-| `GET` | `/api/runs` | List all runs (newest first) |
+| `GET` | `/api/runs` | List runs (newest first); optional filters (see below) |
 | `POST` | `/api/runs` | Create a run |
 | `GET` | `/api/runs/:id` | Get a run by id |
 | `PATCH` | `/api/runs/:id` | Update a run (partial) |
 | `DELETE` | `/api/runs/:id` | Delete a run |
 | `POST` | `/api/runs/import` | Parse an uploaded `.gpx` and return run fields (does not persist) |
+| `GET` | `/api/stats/summary` | Total runs, distance, and duration |
+| `GET` | `/api/stats/weekly` | Distance + run count per week |
+| `GET` | `/api/stats/pace` | Distance + duration per week (client derives pace) |
+| `GET` | `/api/stats/by-type` | Count + distance per run type |
+
+**Filtering `GET /api/runs`** — all optional and AND-combined: `from`/`to` (`YYYY-MM-DD`, whole-day inclusive), `minDistanceKm`/`maxDistanceKm`, and `type` (one of the run types, repeatable or comma-separated). Invalid or inverted ranges return `400`.
+
+**Stats query params** — all optional: `from`/`to` (`YYYY-MM-DD`) and `timezone` (IANA name or UTC offset, for week bucketing; defaults to UTC). Endpoints return canonical units; pace and formatting are computed on the client.
 
 ### Run model
 
@@ -125,9 +139,10 @@ The current capability specs live in [`openspec/specs/`](openspec/specs/).
 
 ## Roadmap
 
-Planned, in no fixed order:
+Shipped so far: run CRUD, GPX import, edit/delete UI, shadcn/Tailwind UI with light/dark theming, sortable run table, responsive layout, the analytics dashboard, and search & filtering.
 
-- Edit and delete runs from the UI
-- Dashboard with charts (weekly mileage, pace trend, run-type breakdown)
-- Search and filtering (by date range, distance, run type)
-- UI/design polish (component library, theming, sortable data table)
+Planned next:
+
+- **Table pagination** — server-side paging of the run list (also moves sorting server-side)
+- Saved/named filters and shareable filtered views
+- Notes full-text search
