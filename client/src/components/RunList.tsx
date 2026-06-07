@@ -1,6 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { fetchRuns, deleteRun, type Run } from '../api/runs'
+import type { SortingState } from '@tanstack/react-table'
+import {
+  fetchRuns,
+  deleteRun,
+  type Run,
+  type RunListParams,
+  type RunSortField,
+  type SortOrder,
+} from '../api/runs'
 import { RunsTable } from '@/features/runs/RunsTable'
 import { RunFilterBar } from '@/features/runs/RunFilterBar'
 import {
@@ -11,6 +19,7 @@ import {
   type FilterState,
 } from '@/features/runs/filters'
 import { RunFormDialog } from '@/features/runs/RunFormDialog'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +31,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 
+const PAGE_SIZE = 20
+
 export function RunList() {
   const queryClient = useQueryClient()
 
@@ -31,10 +42,30 @@ export function RunList() {
   // No run types selected → empty by definition; skip the request entirely.
   const emptyTypeSelection = noTypesSelected(filters)
 
-  // The API returns runs newest-first (already filtered); the table re-sorts.
+  // Server-side sort (default newest-first) and the current page offset.
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }])
+  const [offset, setOffset] = useState(0)
+  const sort = (sorting[0]?.id ?? 'date') as RunSortField
+  const order: SortOrder = sorting[0]?.desc ? 'desc' : 'asc'
+
+  // Reset to the first page whenever the filters or the sort change.
+  const filterSortKey = JSON.stringify([apiFilters, sort, order])
+  useEffect(() => {
+    setOffset(0)
+  }, [filterSortKey])
+
+  const params: RunListParams = {
+    ...apiFilters,
+    limit: PAGE_SIZE,
+    offset,
+    sort,
+    order,
+  }
+
+  // A page of filtered, server-sorted runs plus the full filtered total.
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['runs', apiFilters],
-    queryFn: () => fetchRuns(apiFilters),
+    queryKey: ['runs', apiFilters, sort, order, offset],
+    queryFn: () => fetchRuns(params),
     enabled: !emptyTypeSelection,
   })
 
@@ -59,8 +90,13 @@ export function RunList() {
   }
 
   const runs: Run[] = emptyTypeSelection ? [] : (data?.runs ?? [])
+  const total = emptyTypeSelection ? 0 : (data?.total ?? 0)
   const filtered = isFilterActive(filters)
-  const resultCount = emptyTypeSelection ? 0 : data?.total
+
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  const currentPage = Math.floor(offset / PAGE_SIZE) + 1
+  const canPrev = offset > 0
+  const canNext = offset + PAGE_SIZE < total
 
   // Body below the always-visible filter bar.
   let body
@@ -80,15 +116,52 @@ export function RunList() {
     )
   } else {
     body = (
-      <RunsTable runs={runs} onEdit={setEditingRun} onDelete={setPendingDelete} />
+      <RunsTable
+        runs={runs}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        onEdit={setEditingRun}
+        onDelete={setPendingDelete}
+      />
     )
   }
 
   return (
     <>
-      <RunFilterBar value={filters} onChange={setFilters} resultCount={resultCount} />
+      <RunFilterBar
+        value={filters}
+        onChange={setFilters}
+        resultCount={emptyTypeSelection ? 0 : data?.total}
+      />
 
       {body}
+
+      {/* Pagination: only meaningful when the filtered set spans multiple pages. */}
+      {!emptyTypeSelection && !isLoading && !isError && total > PAGE_SIZE && (
+        <div className="mt-4 flex items-center justify-between gap-2">
+          <span className="text-sm text-muted-foreground">
+            Page {currentPage} of {pageCount}
+          </span>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!canPrev}
+              onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!canNext}
+              onClick={() => setOffset((o) => o + PAGE_SIZE)}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Edit: the run-entry form, prefilled, inside the shared dialog. */}
       <RunFormDialog

@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import {
   type Column,
   type ColumnDef,
+  type OnChangeFn,
   type SortingState,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react'
@@ -59,16 +59,19 @@ function SortHeader({ column, label }: { column: Column<Run, unknown>; label: st
 
 export function RunsTable({
   runs,
+  sorting,
+  onSortingChange,
   onEdit,
   onDelete,
 }: {
   runs: Run[]
+  // Sorting is controlled by the parent and applied server-side; the column ids
+  // (date, distanceKm, durationSec, type) map to the API sort field.
+  sorting: SortingState
+  onSortingChange: OnChangeFn<SortingState>
   onEdit: (run: Run) => void
   onDelete: (run: Run) => void
 }) {
-  // Default to newest-first, preserving the prior list ordering.
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }])
-
   const columns = useMemo<ColumnDef<Run>[]>(
     () => [
       {
@@ -131,9 +134,12 @@ export function RunsTable({
     data: runs,
     columns,
     state: { sorting },
-    onSortingChange: setSorting,
+    onSortingChange,
+    // Server sorts/pages the data; the table renders the page as-is. Removal is
+    // disabled so a column always has a direction (asc/desc, never "unsorted").
+    manualSorting: true,
+    enableSortingRemoval: false,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   })
 
   return (

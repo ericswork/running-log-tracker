@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
+import type { SortingState } from '@tanstack/react-table'
 import { RunsTable } from './RunsTable'
 import type { Run } from '@/api/runs'
 
@@ -34,29 +35,50 @@ const runs: Run[] = [
 ]
 
 // Read the Distance column (2nd cell) of each body row, in display order.
-function distanceColumn(): string[] {
+function distanceColumn(): (string | null)[] {
   return screen
     .getAllByRole('row')
     .slice(1) // skip the header row
     .map((row) => within(row).getAllByRole('cell')[1].textContent)
 }
 
-describe('RunsTable sorting', () => {
-  it('defaults to newest-first by date', () => {
-    render(<RunsTable runs={runs} onEdit={vi.fn()} onDelete={vi.fn()} />)
-    // Newest date first: 06-03 (10km), 06-02 (7km), 06-01 (3km)
-    expect(distanceColumn()).toEqual(['10', '7', '3'])
+const dateDesc: SortingState = [{ id: 'date', desc: true }]
+
+describe('RunsTable', () => {
+  it('renders rows in the order provided (the server already sorted them)', () => {
+    render(
+      <RunsTable
+        runs={runs}
+        sorting={dateDesc}
+        onSortingChange={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+      />,
+    )
+    // Rendered as-given (no client-side reordering): 10, 3, 7
+    expect(distanceColumn()).toEqual(['10', '3', '7'])
   })
 
-  it('reorders rows when sorting by the Distance column', () => {
-    render(<RunsTable runs={runs} onEdit={vi.fn()} onDelete={vi.fn()} />)
+  it('reports a sort change to the parent instead of reordering locally', () => {
+    const onSortingChange = vi.fn()
+    render(
+      <RunsTable
+        runs={runs}
+        sorting={dateDesc}
+        onSortingChange={onSortingChange}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+      />,
+    )
 
     fireEvent.click(screen.getByRole('button', { name: /distance/i }))
-    // Ascending by distance
-    expect(distanceColumn()).toEqual(['3', '7', '10'])
 
-    fireEvent.click(screen.getByRole('button', { name: /distance/i }))
-    // Descending by distance
-    expect(distanceColumn()).toEqual(['10', '7', '3'])
+    expect(onSortingChange).toHaveBeenCalledTimes(1)
+    // Resolve the functional updater against the current sort → distance ascending.
+    const updater = onSortingChange.mock.calls[0][0]
+    const next = typeof updater === 'function' ? updater(dateDesc) : updater
+    expect(next).toEqual([{ id: 'distanceKm', desc: false }])
+    // The rows themselves did not reorder (still server order).
+    expect(distanceColumn()).toEqual(['10', '3', '7'])
   })
 })

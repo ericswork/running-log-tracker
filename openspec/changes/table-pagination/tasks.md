@@ -19,10 +19,10 @@
 
 ## 4. Frontend — table pagination + server sorting
 
-- [ ] 4.1 Switch `features/runs/RunsTable` to TanStack `manualPagination` + `manualSorting`: accept the page rows + total/pageCount + controlled sorting/pagination state, and report sort/page changes up (no in-memory comparator)
-- [ ] 4.2 In `RunList`: hold `offset` + `sort`/`order` state, fold them into the `['runs', filters, sort, offset]` query key, pass to `fetchRuns`, and render the page rows
-- [ ] 4.3 Add Prev/Next controls (disabled at bounds) + a "Page X of Y" indicator derived from `total`/`limit`; reset `offset` to 0 whenever the filters or the sort change
-- [ ] 4.4 Keep the "No runs match your filters" / "No runs yet" empty states (now keyed off `total === 0`) and show a loading state while a page is fetching
+- [x] 4.1 Switch `features/runs/RunsTable` to TanStack `manualSorting`: accept the page rows + controlled sorting state, and report sort changes up (no in-memory comparator)
+- [x] 4.2 In `RunList`: hold `offset` + `sort`/`order` state, fold them into the `['runs', filters, sort, order, offset]` query key, pass to `fetchRuns`, and render the page rows
+- [x] 4.3 Add Prev/Next controls (disabled at bounds) + a "Page X of Y" indicator derived from `total`/`limit`; reset `offset` to 0 whenever the filters or the sort change
+- [x] 4.4 Keep the "No runs match your filters" / "No runs yet" empty states (now keyed off `total === 0`) and show a loading state while a page is fetching
 
 ## 5. Frontend — tests & verification
 
