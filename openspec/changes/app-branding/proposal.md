@@ -1,6 +1,6 @@
 ## Why
 
-The app works but looks unbranded: the accent color is the stock shadcn neutral (near-black/near-white), there's no logo, the browser tab still reads the default title **"client"** with a placeholder favicon. A light brand pass — a fresh green/teal accent, a logo mark in the header, and a matching favicon/title — gives "Running Log" a bit of identity without a full redesign. Frontend-only; no data or behavior changes. Targets release v0.4.1.
+The app works but looks unbranded: the accent color is the stock shadcn neutral (near-black/near-white), there's no logo, the browser tab still reads the default title **"client"** with a placeholder favicon. A light brand pass — a fresh green/teal accent, a logo mark in the header, and a matching favicon/title — gives "Running Log" a bit of identity without a full redesign. Frontend-only; no data or behavior changes. Targets release v0.5.0.
 
 ## What Changes
 

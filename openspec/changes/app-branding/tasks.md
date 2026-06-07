@@ -1,6 +1,6 @@
 ## 1. Brand color tokens
 
-- [ ] 1.1 In `client/src/index.css`, set `--primary`/`--primary-foreground`/`--ring` to the green/teal values in **both** the `:root` (light) and `.dark` blocks (start from the design D1 table; tune visually)
+- [x] 1.1 In `client/src/index.css`, set `--primary`/`--primary-foreground`/`--ring` to the green/teal values in **both** the `:root` (light) and `.dark` blocks (start from the design D1 table; tune visually)
 - [ ] 1.2 Visually verify contrast in light and dark: buttons, selected run-type chips, focus rings, and the dashboard "hide empty weeks" checkbox; nudge the oklch L values if anything reads low-contrast
 
 ## 2. Header logo mark
@@ -21,4 +21,4 @@
 ## 5. Wrap-up
 
 - [ ] 5.1 Update `CLAUDE.md` (UI stack / app-shell notes for the brand tokens + logo mark) and status/continuity
-- [ ] 5.2 Confirm change ready for `/opsx:archive` (tag target `v0.4.1`)
+- [ ] 5.2 Confirm change ready for `/opsx:archive` (tag target `v0.5.0`)
