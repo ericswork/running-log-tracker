@@ -31,5 +31,5 @@
 
 ## 6. Wrap-up
 
-- [ ] 6.1 Update `CLAUDE.md` (API: `GET /api/runs` pagination/sort params + envelope; schema indexes + first migration; run-list view paging) and status/continuity + totals
-- [ ] 6.2 Confirm change ready for `/opsx:archive` (tag target `v0.6.0`)
+- [x] 6.1 Update `CLAUDE.md` (API: `GET /api/runs` pagination/sort params + envelope; schema indexes + first migration; run-list view paging) and status/continuity + totals
+- [x] 6.2 Confirm change ready for `/opsx:archive` (tag target `v0.6.0`)
