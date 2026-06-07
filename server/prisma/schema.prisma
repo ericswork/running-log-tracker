@@ -20,4 +20,10 @@ model Run {
   type        String
   notes       String?
   createdAt   DateTime @default(now())
+
+  // Back the server-side sort/filter on GET /api/runs (one column at a time).
+  @@index([date])
+  @@index([distanceKm])
+  @@index([durationSec])
+  @@index([type])
 }

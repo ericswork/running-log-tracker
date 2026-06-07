@@ -1,8 +1,8 @@
 ## 1. Database indexes (migration)
 
-- [ ] 1.1 Add `@@index([date])`, `@@index([distanceKm])`, `@@index([durationSec])`, `@@index([type])` to the `Run` model in `server/prisma/schema.prisma`
-- [ ] 1.2 Create the migration with `npm --prefix server exec prisma migrate dev` (name it e.g. `add_run_indexes`); confirm `dev.db` is intact and the new `prisma/migrations/` entry is created
-- [ ] 1.3 Confirm the isolated `test.db` picks up the indexes via `prisma db push` in `vitest.globalSetup` (the suite still runs cleanly)
+- [x] 1.1 Add `@@index([date])`, `@@index([distanceKm])`, `@@index([durationSec])`, `@@index([type])` to the `Run` model in `server/prisma/schema.prisma`
+- [x] 1.2 Create the migration with `npm --prefix server exec prisma migrate dev` (name it e.g. `add_run_indexes`); confirm `dev.db` is intact and the new `prisma/migrations/` entry is created
+- [x] 1.3 Confirm the isolated `test.db` picks up the indexes via `prisma db push` in `vitest.globalSetup` (the suite still runs cleanly)
 
 ## 2. Backend — pagination + server sorting
 
