@@ -81,18 +81,18 @@ server/src/
   lib/validation.ts
   gpx/parse.ts            # parseGpx(source) -> {distanceKm,durationSec?,date?}; GpxParseError
   generated/prisma/       # generated client (gitignored)
-server/{prisma/schema.prisma, prisma.config.ts, vitest.config.ts, vitest.setup.ts, vitest.globalSetup.ts}
-server/tests/{runs.api,import.api,stats.api}.test.ts + fixtures/*.gpx
+server/{prisma/{schema.prisma, migrations/, seed.ts}, prisma.config.ts, vitest.config.ts, vitest.setup.ts, vitest.globalSetup.ts}
+server/tests/{runs.api,runs.filter.api,runs.pagination.api,import.api,stats.api}.test.ts + fixtures/*.gpx
 server/src/**/*.test.ts   # unit tests co-located (e.g. stats/buckets.test.ts)
 client/src/
   main.tsx, App.tsx              # App = ThemeProvider > AppShell > Tabs(Log: form+RunList | Dashboard)
-  api/{runs.ts, stats.ts}        # runs CRUD + importGpx + RunFilters ; stats fetchers (browser tz attached)
+  api/{runs.ts, stats.ts}        # runs CRUD + importGpx + RunFilters + RunListParams/RunsPage (paginated) ; stats fetchers (browser tz attached)
   index.css                      # Tailwind import + shadcn theme tokens (incl. --chart-1..5)
   lib/utils.ts                   # cn()
   components/ui/                 # shadcn primitives (button, table, dialog, alert-dialog, dropdown-menu, input, label, select, textarea, card, checkbox, tabs)
   components/DateRangeControl.tsx   # shared from/to native-date control (Log filter bar + Dashboard)
   components/layout/             # AppShell, ThemeProvider, ThemeToggle (+ .test)
-  components/{RunForm,RunList}.tsx  # RunForm (create/edit) ; RunList (filter bar + table container + edit/delete dialogs)
+  components/{RunForm,RunList}.tsx  # RunForm (create/edit) ; RunList (filter bar + paginated table container + pager + edit/delete dialogs)
   features/runs/                 # RunsTable, RunFormDialog, RunFilterBar, RunTypeChips, filters.ts (+ .test)
   features/dashboard/            # Dashboard, SummaryCards, {WeeklyMileage,PaceTrend,TypeBreakdown}Chart, ChartCard, EmptyState; hooks.ts, shape.ts, format.ts (+ .test)
   test/                          # setup.ts (jsdom mocks: matchMedia, ResizeObserver, localStorage), renderWithClient.tsx
