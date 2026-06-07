@@ -1,7 +1,7 @@
 ## 1. Page-range helper (pure)
 
-- [ ] 1.1 Add `features/runs/pageRange.ts` exporting `pageRange(currentPage, pageCount)` that returns an ordered list of page-number tokens and `'ellipsis'` markers, always including the first and last page and a window of the current page ±1, collapsing multi-page gaps to a single ellipsis and rendering a lone hidden page as its number (no single-page ellipsis)
-- [ ] 1.2 Add `features/runs/pageRange.test.ts` covering: few pages (no ellipsis), near the start (`1 2 3 4 5 … 13`), near the end, middle (ellipsis on both sides), single page, and the no-single-page-ellipsis edge case
+- [x] 1.1 Add `features/runs/pageRange.ts` exporting `pageRange(currentPage, pageCount)` that returns an ordered list of page-number tokens and `'ellipsis'` markers, always including the first and last page and a window of the current page ±1, collapsing multi-page gaps to a single ellipsis and rendering a lone hidden page as its number (no single-page ellipsis)
+- [x] 1.2 Add `features/runs/pageRange.test.ts` covering: few pages (no ellipsis), near the start (`1 2 3 4 5 … 13`), near the end, middle (ellipsis on both sides), single page, and the no-single-page-ellipsis edge case
 
 ## 2. Pager component
 
