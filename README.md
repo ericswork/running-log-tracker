@@ -6,7 +6,7 @@ A full-stack web app for logging runs and tracking training. Record runs by hand
 
 - **Run logging** — record a run's distance, duration, start date & time, type (Easy, Recovery, Tempo, Interval, Long Run, Race), and optional notes.
 - **GPX import** — upload a `.gpx` file (from a watch, Strava, etc.) and the entry form auto-fills distance, duration, and start time from the track; you review and save.
-- **Run history table** — browse logged runs in a data table with inline **edit** and **delete** (confirmation-guarded), **server-side sorting** (by date, distance, duration, or type) and **pagination** (Prev/Next with a page indicator).
+- **Run history table** — browse logged runs (10 per page) in a data table with inline **edit** and **delete** (confirmation-guarded), **server-side sorting** (by date, distance, duration, or type) and a **numbered pager** (jump to any page, first/last with ellipsis windowing, Prev/Next, and a "Page X of Y" indicator).
 - **Search & filtering** — narrow the list by date range, distance band, and run type (multi-select), all server-side; clear filters in one click.
 - **Analytics dashboard** — summary cards (total runs, distance, time, average pace) plus charts for weekly mileage, pace trend, and run-type breakdown, with a date-range picker to scope the window. Time-based stats bucket in your local timezone.
 - **Polished UI** — shadcn/ui + Tailwind with a green/teal brand accent and a logo mark, light/dark theming (persisted), and a responsive layout with a Log / Dashboard tab switch.
@@ -150,10 +150,9 @@ The current capability specs live in [`openspec/specs/`](openspec/specs/).
 
 ## Roadmap
 
-Shipped so far: run CRUD, GPX import, edit/delete UI, shadcn/Tailwind UI with light/dark theming and brand styling, sortable run table, responsive layout, the analytics dashboard, search & filtering, and server-side pagination.
+Shipped so far: run CRUD, GPX import, edit/delete UI, shadcn/Tailwind UI with light/dark theming and brand styling, sortable run table, responsive layout, the analytics dashboard, search & filtering, server-side pagination, and a numbered pager (jump-to-page + mobile-friendly controls).
 
 Planned next:
 
-- **Pagination controls** — selectable page size and jump-to-a-specific-page
 - Saved/named filters and shareable filtered views
 - Notes full-text search
